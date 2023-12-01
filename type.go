@@ -10,6 +10,9 @@ type User struct {
 	Username string `json:"username" bson:"username"`
 	Password string `json:"password" bson:"password"`
 	Role     string `json:"role,omitempty" bson:"role,omitempty"`
+	Token    string `json:"token,omitempty" bson:"token,omitempty"`
+	Private  string `json:"private,omitempty" bson:"private,omitempty"`
+	Public   string `json:"public,omitempty" bson:"public,omitempty"`
 }
 
 type Credential struct {
@@ -51,5 +54,17 @@ type Report struct {
     DateOccurred  	string 				`json:"dateOccurred"`
 	Image       	string             	`json:"image" bson:"image"`
 	Status      	bool               	`json:"status" bson:"status"`
+}
+
+type Contact struct {
+	ID      int    `json:"id" bson:"id"`
+	Name    string `json:"title" bson:"title"`
+	Subject string `json:"description" bson:"description"`
+	Alamat  string `json:"alamat" bson:"alamat"`
+	Website string `json:"website" bson:"website"`
+	Message string `json:"image" bson:"image"`
+	Email   string `json:"email" bson:"email"`
+	Phone   string `json:"phone" bson:"phone"`
+	Status  bool   `json:"status" bson:"status"`
 }
 

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"os/user"
 
 	"github.com/aiteung/atdb"
 
@@ -34,7 +33,7 @@ func DeleteUser(mongoconn *mongo.Database, collection string, userdata User) int
 	return atdb.DeleteOneDoc(mongoconn, collection, filter)
 }
 
-func FindAdmin(mongoconn *mongo.Database, collection string, userdata User) User {
+func FindUser(mongoconn *mongo.Database, collection string, userdata User) User {
 	filter := bson.M{"username": userdata.Username}
 	return atdb.GetOneDoc[User](mongoconn, collection, filter)
 }
@@ -63,7 +62,7 @@ func InsertOneDoc(db *mongo.Database, collection string, doc interface{}) (inser
 }
 
 func GetOneUser(MongoConn *mongo.Database, colname string, userdata User) User {
-	filter := bson.M{"username": user.Username}
+	filter := bson.M{"username": userdata.Username}
 	data := atdb.GetOneDoc[User](MongoConn, colname, filter)
 	return data
 }

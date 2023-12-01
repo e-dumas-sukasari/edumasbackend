@@ -86,16 +86,16 @@ func GCFInsertReport(publickey, MONGOCONNSTRINGENV, dbname, colluser, collreport
 		} else {
 			user2 := FindUser(mconn, colluser, userdata)
 			if user2.Role == "user" {
-				var datauser User
-				err := json.NewDecoder(r.Body).Decode(&datauser)
+				var datareport Report
+				err := json.NewDecoder(r.Body).Decode(&datareport)
 				if err != nil {
 					response.Message = "Error parsing application/json: " + err.Error()
 				} else {
 					insertReport(mconn, collreport, Report{
-						Nik:     		datareport.Nomorid,
+						Nik:     		datareport.Nik,
 						Title:       	datareport.Title,
 						Description: 	datareport.Description,
-						DateOccurred: 	datareport.DataOccurred,
+						DateOccurred: 	datareport.DateOccurred,
 						Image:       	datareport.Image,
 						Status:      	datareport.Status,
 					})
@@ -116,7 +116,7 @@ func GCFDeleteReport(publickey, MONGOCONNSTRINGENV, dbname, colluser, collreport
 	var respon Credential
 	respon.Status = false
 	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
-	var userdata Report
+	var userdata User
 
 	gettoken := r.Header.Get("token")
 	if gettoken == "" {

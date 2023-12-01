@@ -26,7 +26,7 @@ func TestDeleteUser(t *testing.T) {
 }
 
 func CreateNewUserToken(t *testing.T) {
-	var Userdata User
+	var userdata User
 	userdata.Username = "edumas123"
 	userdata.Password = "mantap"
 	userdata.Role = "user"
@@ -91,7 +91,7 @@ func TestHashFunction(t *testing.T) {
 	userdata.Username = "tes123"
 	userdata.Password = "tes321"
 
-	filter := bson.M{"username": userdata.User}
+	filter := bson.M{"username": userdata.Username}
 	res := atdb.GetOneDoc[User](mconn, "user", filter)
 	fmt.Println("Mongo User Result: ", res)
 	hash, _ := HashPass(userdata.Password)
