@@ -135,6 +135,11 @@ func CreateNewReport(mongoconn *mongo.Database, collection string, reportdata Re
 }
 
 // Report function
+func CreateReport(mongoconn *mongo.Database, collection string, reportdata Report) interface{} {
+	return atdb.InsertOneDoc(mongoconn, collection, reportdata)
+}
+
+// Report function
 func insertReport(mongoconn *mongo.Database, collection string, reportdata Report) interface{} {
 	return atdb.InsertOneDoc(mongoconn, collection, reportdata)
 }

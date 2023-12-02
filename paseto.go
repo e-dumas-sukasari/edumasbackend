@@ -68,7 +68,22 @@ func Register(Mongoenv, dbname string, r *http.Request) string {
 
 // <--- ini Report --->
 
-// report post
+//Create Report post
+func GCFCreateReport(MONGOCONNSTRINGENV, dbname, collectionname string, r *http.Request) string {
+	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
+	var datareport Report
+	err := json.NewDecoder(r.Body).Decode(&datareport)
+	if err != nil {
+		return err.Error()
+	}
+	if err := CreateReport(mconn, collectionname, datareport); err != nil {
+		return GCFReturnStruct(CreateResponse(true, "Success Create Catalog", datareport))
+	} else {
+		return GCFReturnStruct(CreateResponse(false, "Failed Create Catalog", datareport))
+	}
+}
+
+// Insert Report post 
 func GCFInsertReport(publickey, MONGOCONNSTRINGENV, dbname, colluser, collreport string, r *http.Request) string {
 	var response Credential
 	response.Status = false
