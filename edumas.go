@@ -2,9 +2,11 @@ package edumasbackend
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 
+	"aidanwoods.dev/go-paseto"
 	"github.com/aiteung/atdb"
 	"github.com/whatsauth/watoken"
 	"go.mongodb.org/mongo-driver/bson"
@@ -128,6 +130,25 @@ func CreateUser(mongoconn *mongo.Database, collection string, userdata User) int
 	// Insert the user data into the database
 	return atdb.InsertOneDoc(mongoconn, collection, userdata)
 }
+
+//decode
+func Decode(publicKey string, tokenstring string) (payload Payload, err error) {
+	var token *paseto.Token
+	var pubKey paseto.V4AsymmetricPublicKey
+	pubKey, err = paseto.NewV4AsymmetricPublicKeyFromHex(publicKey) // this wil fail if given key in an invalid format
+	if err != nil {
+		fmt.Println("Decode NewV4AsymmetricPublicKeyFromHex : ", err)
+	}
+	parser := paseto.NewParser()                                // only used because this example token has expired, use NewParser() (which checks expiry by default)
+	token, err = parser.ParseV4Public(pubKey, tokenstring, nil) // this will fail if parsing failes, cryptographic checks fail, or validation rules fail
+	if err != nil {
+		fmt.Println("Decode ParseV4Public : ", err)
+	} else {
+		json.Unmarshal(token.ClaimsJSON(), &payload)
+	}
+	return payload, err
+}
+
 
 // Report
 func CreateNewReport(mongoconn *mongo.Database, collection string, reportdata Report) interface{} {
