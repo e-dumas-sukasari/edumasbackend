@@ -51,6 +51,7 @@ type Payload struct {
 	Id   primitive.ObjectID 	`json:"id"`
 	Admin 	string				`json:"admin"`
 	User 	string				`json:"user"`
+	Report	string				`json:"report"`
 	Role 	string             	`json:"role"`
 	Exp  	time.Time          	`json:"exp"`
 	Iat  	time.Time          	`json:"iat"`
