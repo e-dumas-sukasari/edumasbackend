@@ -15,6 +15,15 @@ type User struct {
 	Public   string `json:"public,omitempty" bson:"public,omitempty"`
 }
 
+type Admin struct {
+	Username string `json:"username" bson:"username"`
+	Password string `json:"password" bson:"password"`
+	Role     string `json:"role,omitempty" bson:"role,omitempty"`
+	Token    string `json:"token,omitempty" bson:"token,omitempty"`
+	Private  string `json:"private,omitempty" bson:"private,omitempty"`
+	Public   string `json:"public,omitempty" bson:"public,omitempty"`
+} 
+
 type Credential struct {
 	Status  bool   `json:"status" bson:"status"`
 	Token   string `json:"token,omitempty" bson:"token,omitempty"`
@@ -39,11 +48,13 @@ type ResponseEncode struct {
 }
 
 type Payload struct {
-	Id   primitive.ObjectID `json:"id"`
-	Role string             `json:"role"`
-	Exp  time.Time          `json:"exp"`
-	Iat  time.Time          `json:"iat"`
-	Nbf  time.Time          `json:"nbf"`
+	Id   primitive.ObjectID 	`json:"id"`
+	Admin 	string				`json:"admin"`
+	User 	string				`json:"user"`
+	Role 	string             	`json:"role"`
+	Exp  	time.Time          	`json:"exp"`
+	Iat  	time.Time          	`json:"iat"`
+	Nbf  	time.Time          	`json:"nbf"`
 }
 
 type Report struct {
