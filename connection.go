@@ -28,6 +28,14 @@ func InsertUserdata(MongoConn *mongo.Database, username, role, password string) 
 	return InsertOneDoc(MongoConn, "user", req)
 }
 
+func InsertAdmindata(MongoConn *mongo.Database, username, role, password string) (InsertedID interface{}) {
+	req := new(Admin)
+	req.Username = username
+	req.Password = password
+	req.Role = role
+	return InsertOneDoc(MongoConn, "admin", req)
+}
+
 func DeleteUser(mongoconn *mongo.Database, collection string, userdata User) interface{} {
 	filter := bson.M{"username": userdata.Username}
 	return atdb.DeleteOneDoc(mongoconn, collection, filter)
@@ -38,10 +46,21 @@ func FindUser(mongoconn *mongo.Database, collection string, userdata User) User 
 	return atdb.GetOneDoc[User](mongoconn, collection, filter)
 }
 
+func FindAdmin(mongoconn *mongo.Database, collection string, admindata Admin) Admin {
+	filter := bson.M{"username": admindata.Username}
+	return atdb.GetOneDoc[Admin](mongoconn, collection, filter)
+}
+
 func IsPasswordValid(mongoconn *mongo.Database, collection string, userdata User) bool {
 	filter := bson.M{"username": userdata.Username}
 	res := atdb.GetOneDoc[User](mongoconn, collection, filter)
 	return CompareHashPass(userdata.Password, res.Password)
+}
+
+func IsPasswordValidAdmin(mongoconn *mongo.Database, collection string, admindata Admin) bool {
+	filter := bson.M{"username": admindata.Username}
+	res := atdb.GetOneDoc[Admin](mongoconn, collection, filter)
+	return CompareHashPass(admindata.Password, res.Password)
 }
 
 func MongoCreateConnection(MongoString, dbname string) *mongo.Database {
@@ -64,5 +83,11 @@ func InsertOneDoc(db *mongo.Database, collection string, doc interface{}) (inser
 func GetOneUser(MongoConn *mongo.Database, colname string, userdata User) User {
 	filter := bson.M{"username": userdata.Username}
 	data := atdb.GetOneDoc[User](MongoConn, colname, filter)
+	return data
+}
+
+func GetOneAdmin(MongoConn *mongo.Database, colname string, admindata Admin) Admin {
+	filter := bson.M{"username": admindata.Username}
+	data := atdb.GetOneDoc[Admin](MongoConn, colname, filter)
 	return data
 }
