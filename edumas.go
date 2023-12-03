@@ -57,6 +57,19 @@ func DeleteOneDoc(_id primitive.ObjectID, db *mongo.Database, col string) error 
 	return nil
 }
 
+// Admin
+func CreateNewAdminRole(mongoconn *mongo.Database, collection string, admindata Admin) interface{} {
+	// Hash the password before storing it
+	hashedPassword, err := HashPass(admindata.Password)
+	if err != nil {
+		return err
+	}
+	admindata.Password = hashedPassword
+
+	// Insert the user data into the database
+	return atdb.InsertOneDoc(mongoconn, collection, admindata)
+}
+
 // User
 func CreateNewUserRole(mongoconn *mongo.Database, collection string, userdata User) interface{} {
 	// Hash the password before storing it
@@ -70,6 +83,7 @@ func CreateNewUserRole(mongoconn *mongo.Database, collection string, userdata Us
 	return atdb.InsertOneDoc(mongoconn, collection, userdata)
 }
 
+//user
 func CreateUserAndAddToken(privateKeyEnv string, mongoconn *mongo.Database, collection string, userdata User) error {
 	// Hash the password before storing it
 	hashedPassword, err := HashPass(userdata.Password)
@@ -88,6 +102,32 @@ func CreateUserAndAddToken(privateKeyEnv string, mongoconn *mongo.Database, coll
 
 	// Insert the user data into the MongoDB collection
 	if err := atdb.InsertOneDoc(mongoconn, collection, userdata.Username); err != nil {
+		return nil // Mengembalikan kesalahan yang dikembalikan oleh atdb.InsertOneDoc
+	}
+
+	// Return nil to indicate success
+	return nil
+}
+
+//admin
+func CreateAdminAndAddToken(privateKeyEnv string, mongoconn *mongo.Database, collection string, admindata Admin) error {
+	// Hash the password before storing it
+	hashedPassword, err := HashPass(admindata.Password)
+	if err != nil {
+		return err
+	}
+	admindata.Password = hashedPassword
+
+	// Create a token for the admin
+	tokenstring, err := watoken.Encode(admindata.Username, os.Getenv(privateKeyEnv))
+	if err != nil {
+		return err
+	}
+
+	admindata.Token = tokenstring
+
+	// Insert the admin data into the MongoDB collection
+	if err := atdb.InsertOneDoc(mongoconn, collection, admindata.Username); err != nil {
 		return nil // Mengembalikan kesalahan yang dikembalikan oleh atdb.InsertOneDoc
 	}
 
@@ -129,6 +169,33 @@ func CreateUser(mongoconn *mongo.Database, collection string, userdata User) int
 
 	// Insert the user data into the database
 	return atdb.InsertOneDoc(mongoconn, collection, userdata)
+}
+
+func CreateAdmin(mongoconn *mongo.Database, collection string, admindata Admin) interface{} {
+	// Hash the password before storing it
+	hashedPassword, err := HashPass(admindata.Password)
+	if err != nil {
+		return err
+	}
+	privateKey, publicKey := watoken.GenerateKey()
+	adminid := admindata.Username
+	tokenstring, err := watoken.Encode(adminid, privateKey)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(tokenstring)
+	// decode token to get userid
+	adminidstring := watoken.DecodeGetId(publicKey, tokenstring)
+	if adminidstring == "" {
+		fmt.Println("expire token")
+	}
+	fmt.Println(adminidstring)
+	admindata.Private = privateKey
+	admindata.Public = publicKey
+	admindata.Password = hashedPassword
+
+	// Insert the user data into the database
+	return atdb.InsertOneDoc(mongoconn, collection, admindata)
 }
 
 //decode
