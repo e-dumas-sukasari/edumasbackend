@@ -94,19 +94,19 @@ func Register(Mongoenv, dbname string, r *http.Request) string {
 // <--- ini Report --->
 
 //Create Report post
-func GCFCreateReport(MONGOCONNSTRINGENV, dbname, collectionname string, r *http.Request) string {
-	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
-	var datareport Report
-	err := json.NewDecoder(r.Body).Decode(&datareport)
-	if err != nil {
-		return err.Error()
-	}
-	if err := CreateReport(mconn, collectionname, datareport); err != nil {
-		return GCFReturnStruct(CreateResponse(true, "Success Create Catalog", datareport))
-	} else {
-		return GCFReturnStruct(CreateResponse(false, "Failed Create Catalog", datareport))
-	}
-}
+// func GCFCreateReport(MONGOCONNSTRINGENV, dbname, collectionname string, r *http.Request) string {
+// 	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
+// 	var datareport Report
+// 	err := json.NewDecoder(r.Body).Decode(&datareport)
+// 	if err != nil {
+// 		return err.Error()
+// 	}
+// 	if err := CreateReport(mconn, collectionname, datareport); err != nil {
+// 		return GCFReturnStruct(CreateResponse(true, "Success Create Catalog", datareport))
+// 	} else {
+// 		return GCFReturnStruct(CreateResponse(false, "Failed Create Catalog", datareport))
+// 	}
+// }
 
 // Insert Report post 
 func GCFInsertReport(publickey, MONGOCONNSTRINGENV, dbname, colluser, collreport string, r *http.Request) string {
@@ -187,6 +187,43 @@ func GCFDeleteReport(publickey, MONGOCONNSTRINGENV, dbname, colluser, collreport
 	return GCFReturnStruct(respon)
 }
 
+//Delete Report For Admin
+func GCFDeleteReportForAdmin(publickey, MONGOCONNSTRINGENV, dbname, colladmin, collreport string, r *http.Request) string {
+
+	var respon Credential
+	respon.Status = false
+	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
+	var admindata Admin
+
+	gettoken := r.Header.Get("token")
+	if gettoken == "" {
+		respon.Message = "Missing token in headers"
+	} else {
+		// Process the request with the "Login" token
+		checktoken := watoken.DecodeGetId(os.Getenv(publickey), gettoken)
+		admindata.Username = checktoken
+		if checktoken == "" {
+			respon.Message = "Invalid token"
+		} else {
+			admin2 := FindAdmin(mconn, colladmin, admindata)
+			if admin2.Role == "admin" {
+				var datareport Report
+				err := json.NewDecoder(r.Body).Decode(&datareport)
+				if err != nil {
+					respon.Message = "Error parsing application/json: " + err.Error()
+				} else {
+					DeleteReport(mconn, collreport, datareport)
+					respon.Status = true
+					respon.Message = "Berhasil Delete Report"
+				}
+			} else {
+				respon.Message = "Anda tidak bisa Delete data karena bukan Admin"
+			}
+		}
+	}
+	return GCFReturnStruct(respon)
+}
+
 // update Report
 func GCFUpdateReport(publickey, MONGOCONNSTRINGENV, dbname, colluser, collreport string, r *http.Request) string {
 	var response Credential
@@ -218,6 +255,44 @@ func GCFUpdateReport(publickey, MONGOCONNSTRINGENV, dbname, colluser, collreport
 				}
 			} else {
 				response.Message = "Anda tidak bisa Update data karena bukan User"
+			}
+
+		}
+	}
+	return GCFReturnStruct(response)
+}
+
+// Update report for admin
+func GCFUpdateReportForAdmin(publickey, MONGOCONNSTRINGENV, dbname, colladmin, collreport string, r *http.Request) string {
+	var response Credential
+	response.Status = false
+	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
+	var admindata Admin
+
+	gettoken := r.Header.Get("token")
+	if gettoken == "" {
+		response.Message = "Missing token in Headers"
+	} else {
+		checktoken := watoken.DecodeGetId(os.Getenv(publickey), gettoken)
+		admindata.Username = checktoken
+		if checktoken == "" {
+			response.Message = "Invalid token"
+		} else {
+			admin2 := FindAdmin(mconn, colladmin, admindata)
+			if admin2.Role == "admin" {
+				var datareport Report
+				err := json.NewDecoder(r.Body).Decode(&datareport)
+				if err != nil {
+					response.Message = "Error parsing application/json: " + err.Error()
+
+				} else {
+					UpdatedReport(mconn, collreport, bson.M{"id": datareport.ID}, datareport)
+					response.Status = true
+					response.Message = "Berhasil Update Report"
+					GCFReturnStruct(CreateResponse(true, "Success Update Report", datareport))
+				}
+			} else {
+				response.Message = "Anda tidak bisa Update data karena bukan Admin"
 			}
 
 		}
