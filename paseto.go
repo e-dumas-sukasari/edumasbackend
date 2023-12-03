@@ -34,6 +34,30 @@ func Login(Privatekey, MongoEnv, dbname, Colname string, r *http.Request) string
 	return GCFReturnStruct(resp)
 }
 
+func LoginAdmin(Privatekey, MongoEnv, dbname, Colname string, r *http.Request) string {
+	var resp Credential
+	mconn := SetConnection(MongoEnv, dbname)
+	var dataadmin Admin
+	err := json.NewDecoder(r.Body).Decode(&dataadmin)
+	if err != nil {
+		resp.Message = "error parsing application/json: " + err.Error()
+	} else {
+		if IsPasswordValidAdmin(mconn, Colname, dataadmin) {
+			tokenstring, err := watoken.Encode(dataadmin.Username, os.Getenv(Privatekey))
+			if err != nil {
+				resp.Message = "Gagal Encode Token : " + err.Error()
+			} else {
+				resp.Status = true
+				resp.Message = "Selamat Datang Admin"
+				resp.Token = tokenstring
+			}
+		} else {
+			resp.Message = "Password Salah"
+		}
+	}
+	return GCFReturnStruct(resp)
+}
+
 // return struct
 func GCFReturnStruct(DataStuct any) string {
 	jsondata, _ := json.Marshal(DataStuct)
