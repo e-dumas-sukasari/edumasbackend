@@ -10,7 +10,7 @@ import (
 
 // <--- paseto encoder --->
 // pengecekantoken
-func IsTokenValid(publickey, tokenstr string) (payload Payload, err error) {
+func Decoder(publickey, tokenstr string) (payload Payload, err error) {
 	var token *paseto.Token
 	var pubKey paseto.V4AsymmetricPublicKey
 	pubKey, err = paseto.NewV4AsymmetricPublicKeyFromHex(publickey) // this wil fail if given key in an invalid format
@@ -26,3 +26,12 @@ func IsTokenValid(publickey, tokenstr string) (payload Payload, err error) {
 	}
 	return payload, err
 }
+
+func DecodeGetReport(PublicKey, tokenStr string) (pay string, err error) {
+	key, err := Decoder(PublicKey, tokenStr)
+	if err != nil {
+		fmt.Println("Cannot decode the token", err.Error())
+	}
+	return key.Report, nil
+}
+
