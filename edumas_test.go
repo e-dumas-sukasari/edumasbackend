@@ -11,10 +11,10 @@ import (
 
 func TestCreateNewUserRole(t *testing.T) {
 	var userdata User
-	userdata.Username = "edumas123"
-	userdata.Password = "edumas321"
+	userdata.Username = "edumas"
+	userdata.Password = "edumaspass"
 	userdata.Role = "user"
-	mconn := SetConnection("MONGOSTRING", "edumasapk")
+	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	CreateNewUserRole(mconn, "user", userdata)
 }
 
@@ -23,25 +23,26 @@ func TestCreateNewAdminRole(t *testing.T) {
 	admindata.Username = "edumasmin"
 	admindata.Password = "edumasmin1"
 	admindata.Role = "admin"
-	mconn := SetConnection("MONGOSTRING", "edumasapk")
+	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	CreateNewAdminRole(mconn, "admin", admindata)
 }	
 
 func TestDeleteUser(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasapk")
+	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	var userdata User
 	userdata.Username = "edumas"
 	DeleteUser(mconn, "user", userdata)
 }
 
+//user
 func CreateNewUserToken(t *testing.T) {
 	var userdata User
-	userdata.Username = "edumas123"
-	userdata.Password = "mantap"
+	userdata.Username = "edumas"
+	userdata.Password = "edumaspass"
 	userdata.Role = "user"
 
 	// Create a MongoDB connection
-	mconn := SetConnection("MONGOSTRING", "edumasapk")
+	mconn := SetConnection("MONGOSTRING", "edumasdb")
 
 	// Call the function to create a user and generate a token
 	err := CreateUserAndAddToken("your_private_key_env", mconn, "user", userdata)
@@ -51,14 +52,15 @@ func CreateNewUserToken(t *testing.T) {
 	}
 }
 
+//admin
 func CreateNewAdminToken(t *testing.T) {
 	var admindata Admin
-	admindata.Username = "admin"
-	admindata.Password = "mantap"
+	admindata.Username = "edumasmin"
+	admindata.Password = "edumasmin1"
 	admindata.Role = "admin"
 
 	// Create a MongoDB connection
-	mconn := SetConnection("MONGOSTRING", "edumasapk")
+	mconn := SetConnection("MONGOSTRING", "edumasdb")
 
 	// Call the function to create a admin and generate a token
 	err := CreateAdminAndAddToken("your_private_key_env", mconn, "admin", admindata)
@@ -68,43 +70,45 @@ func CreateNewAdminToken(t *testing.T) {
 	}
 }
 
+//user
 func TestGFCPostHandlerUser(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasapk")
+	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	var userdata User
-	userdata.Username = "edumas123"
-	userdata.Password = "mantap"
+	userdata.Username = "edumas"
+	userdata.Password = "edumaspass"
 	userdata.Role = "user"
 	CreateNewUserRole(mconn, "user", userdata)
 }
 
+//admin
 func TestGFCPostHandlerAdmin(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasapk")
+	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	var admindata Admin
-	admindata.Username = "edumas123"
-	admindata.Password = "mantap"
+	admindata.Username = "edumasmin"
+	admindata.Password = "edumasmin1"
 	admindata.Role = "Admin"
 	CreateNewAdminRole(mconn, "admin", admindata)
 }
 
 func TestReport(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasapk")
+	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	var reportdata Report
 	reportdata.Nik = 12121
 	reportdata.Title = "Jalan Rusak"
 	reportdata.Description = "Di sarijadi ada jalan bolong rusak"
-	reportdata.DateOccurred = "18112002"
+	reportdata.DateOccurred = "18-11-2024"
 	reportdata.Image = "https://images3.alphacoders.com/165/thumb-1920-165265.jpg"
 	CreateNewReport(mconn, "report", reportdata)
 }
 
 func TestAllReport(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasapk")
+	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	report := GetAllReport(mconn, "report")
 	fmt.Println(report)
 }
 
 func TestGeneratePasswordHash(t *testing.T) {
-	password := "ganteng"
+	password := "edumaspass"
 	hash, _ := HashPass(password) // ignore error for the sake of simplicity
 
 	fmt.Println("Password:", password)
@@ -116,15 +120,15 @@ func TestGeneratePrivateKeyPaseto(t *testing.T) {
 	privateKey, publicKey := watoken.GenerateKey()
 	fmt.Println(privateKey)
 	fmt.Println(publicKey)
-	hasil, err := watoken.Encode("wew", privateKey)
+	hasil, err := watoken.Encode("edumaspass", privateKey)
 	fmt.Println(hasil, err)
 }
 
 func TestHashFunction(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasapk")
+	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	var userdata User
-	userdata.Username = "tes123"
-	userdata.Password = "tes321"
+	userdata.Username = "edumasser"
+	userdata.Password = "edumasser"
 
 	filter := bson.M{"username": userdata.Username}
 	res := atdb.GetOneDoc[User](mconn, "user", filter)
@@ -136,10 +140,10 @@ func TestHashFunction(t *testing.T) {
 }
 
 func TestHashFunctionAdmin(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasapk")
+	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	var admindata Admin
-	admindata.Username = "tes123"
-	admindata.Password = "tes321"
+	admindata.Username = "admin123"
+	admindata.Password = "admin321"
 
 	filter := bson.M{"username": admindata.Username}
 	res := atdb.GetOneDoc[Admin](mconn, "admin", filter)
@@ -151,57 +155,57 @@ func TestHashFunctionAdmin(t *testing.T) {
 }
 
 func TestIsPasswordValid(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasapk")
+	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	var userdata User
-	userdata.Username = "ganteng"
-	userdata.Password = "gelis"
+	userdata.Username = "edumas"
+	userdata.Password = "edumaspass"
 
 	anu := IsPasswordValid(mconn, "user", userdata)
 	fmt.Println(anu)
 }
 
 func TestIsPasswordValidAdmin(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasapk")
+	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	var admindata Admin
-	admindata.Username = "ganteng"
-	admindata.Password = "gelis"
+	admindata.Username = "edumasmin"
+	admindata.Password = "edumasmin1"
 
 	anu := IsPasswordValidAdmin(mconn, "admin", admindata)
 	fmt.Println(anu)
 }
 
 func TestUserFix(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasapk")
+	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	var userdata User
-	userdata.Username = "edumas"
-	userdata.Password = "edumas0"
+	userdata.Username = "edumasbal"
+	userdata.Password = "edumasbal"
 	userdata.Role = "user"
 	CreateUser(mconn, "user", userdata)
 }
 
 func TestAdminFix(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasapk")
+	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	var admindata Admin
-	admindata.Username = "edumas"
-	admindata.Password = "edumas0"
+	admindata.Username = "edumasadmin"
+	admindata.Password = "edumasadmin"
 	admindata.Role = "admin"
 	CreateAdmin(mconn, "admin", admindata)
 }
 
 func TestLoginn(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "pasabarapk")
+	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	var userdata User
 	userdata.Username = "edumas"
-	userdata.Password = "edumas0"
+	userdata.Password = "edumaspass"
 	IsPasswordValid(mconn, "user", userdata)
 	fmt.Println(userdata)
 }
 
 func TestLoginnAdmin(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "pasabarapk")
+	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	var admindata Admin
-	admindata.Username = "edumas"
-	admindata.Password = "edumas0"
+	admindata.Username = "edumasmin"
+	admindata.Password = "edumasmin1"
 	IsPasswordValidAdmin(mconn, "admin", admindata)
 	fmt.Println(admindata)
 }

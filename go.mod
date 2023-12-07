@@ -5,8 +5,8 @@ go 1.21.3
 require (
 	aidanwoods.dev/go-paseto v1.5.1
 	github.com/aiteung/atdb v0.1.3
-	github.com/whatsauth/watoken v0.1.3
-	go.mongodb.org/mongo-driver v1.13.0
+	github.com/whatsauth/watoken v0.1.4
+	go.mongodb.org/mongo-driver v1.13.1
 	golang.org/x/crypto v0.16.0
 )
 
