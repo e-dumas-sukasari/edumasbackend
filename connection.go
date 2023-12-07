@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/aiteung/atdb"
+	"github.com/whatsauth/watoken"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -49,6 +50,11 @@ func FindUser(mongoconn *mongo.Database, collection string, userdata User) User 
 func FindAdmin(mongoconn *mongo.Database, collection string, admindata Admin) Admin {
 	filter := bson.M{"username": admindata.Username}
 	return atdb.GetOneDoc[Admin](mongoconn, collection, filter)
+}
+
+func IsExist(Tokenstr, PublicKey string) bool {
+	id := watoken.DecodeGetId(PublicKey, Tokenstr)
+	return id != ""
 }
 
 func IsPasswordValid(mongoconn *mongo.Database, collection string, userdata User) bool {
