@@ -14,7 +14,7 @@ func TestCreateNewUserRole(t *testing.T) {
 	userdata.Username = "edumas"
 	userdata.Password = "edumaspass"
 	userdata.Role = "user"
-	mconn := SetConnection("MONGOSTRING", "edumasdb")
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
 	CreateNewUserRole(mconn, "user", userdata)
 }
 
@@ -23,12 +23,12 @@ func TestCreateNewAdminRole(t *testing.T) {
 	admindata.Username = "edumasmin"
 	admindata.Password = "edumasmin1"
 	admindata.Role = "admin"
-	mconn := SetConnection("MONGOSTRING", "edumasdb")
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
 	CreateNewAdminRole(mconn, "admin", admindata)
 }	
 
 func TestDeleteUser(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasdb")
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
 	var userdata User
 	userdata.Username = "edumas"
 	DeleteUser(mconn, "user", userdata)
@@ -42,7 +42,7 @@ func CreateNewUserToken(t *testing.T) {
 	userdata.Role = "user"
 
 	// Create a MongoDB connection
-	mconn := SetConnection("MONGOSTRING", "edumasdb")
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
 
 	// Call the function to create a user and generate a token
 	err := CreateUserAndAddToken("your_private_key_env", mconn, "user", userdata)
@@ -60,7 +60,7 @@ func CreateNewAdminToken(t *testing.T) {
 	admindata.Role = "admin"
 
 	// Create a MongoDB connection
-	mconn := SetConnection("MONGOSTRING", "edumasdb")
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
 
 	// Call the function to create a admin and generate a token
 	err := CreateAdminAndAddToken("your_private_key_env", mconn, "admin", admindata)
@@ -72,7 +72,7 @@ func CreateNewAdminToken(t *testing.T) {
 
 //user
 func TestGFCPostHandlerUser(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasdb")
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
 	var userdata User
 	userdata.Username = "edumas"
 	userdata.Password = "edumaspass"
@@ -82,7 +82,7 @@ func TestGFCPostHandlerUser(t *testing.T) {
 
 //admin
 func TestGFCPostHandlerAdmin(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasdb")
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
 	var admindata Admin
 	admindata.Username = "edumasmin"
 	admindata.Password = "edumasmin1"
@@ -91,7 +91,7 @@ func TestGFCPostHandlerAdmin(t *testing.T) {
 }
 
 func TestReport(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasdb")
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
 	var reportdata Report
 	reportdata.Nik = 12121
 	reportdata.Title = "Jalan Rusak"
@@ -102,7 +102,7 @@ func TestReport(t *testing.T) {
 }
 
 func TestAllReport(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasdb")
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
 	report := GetAllReport(mconn, "report")
 	fmt.Println(report)
 }
@@ -125,7 +125,7 @@ func TestGeneratePrivateKeyPaseto(t *testing.T) {
 }
 
 func TestHashFunction(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasdb")
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
 	var userdata User
 	userdata.Username = "edumasser"
 	userdata.Password = "edumasser"
@@ -140,7 +140,7 @@ func TestHashFunction(t *testing.T) {
 }
 
 func TestHashFunctionAdmin(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasdb")
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
 	var admindata Admin
 	admindata.Username = "admin123"
 	admindata.Password = "admin321"
@@ -155,7 +155,7 @@ func TestHashFunctionAdmin(t *testing.T) {
 }
 
 func TestIsPasswordValid(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasdb")
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
 	var userdata User
 	userdata.Username = "edumas"
 	userdata.Password = "edumaspass"
@@ -165,7 +165,7 @@ func TestIsPasswordValid(t *testing.T) {
 }
 
 func TestIsPasswordValidAdmin(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasdb")
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
 	var admindata Admin
 	admindata.Username = "edumasmin"
 	admindata.Password = "edumasmin1"
@@ -175,7 +175,7 @@ func TestIsPasswordValidAdmin(t *testing.T) {
 }
 
 func TestUserFix(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasdb")
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
 	var userdata User
 	userdata.Username = "edumasbal"
 	userdata.Password = "edumasbal"
@@ -184,7 +184,7 @@ func TestUserFix(t *testing.T) {
 }
 
 func TestAdminFix(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasdb")
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
 	var admindata Admin
 	admindata.Username = "edumasadmin"
 	admindata.Password = "edumasadmin"
@@ -193,7 +193,7 @@ func TestAdminFix(t *testing.T) {
 }
 
 func TestLoginn(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasdb")
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
 	var userdata User
 	userdata.Username = "edumas"
 	userdata.Password = "edumaspass"
@@ -202,7 +202,7 @@ func TestLoginn(t *testing.T) {
 }
 
 func TestLoginnAdmin(t *testing.T) {
-	mconn := SetConnection("MONGOSTRING", "edumasdb")
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
 	var admindata Admin
 	admindata.Username = "edumasmin"
 	admindata.Password = "edumasmin1"
