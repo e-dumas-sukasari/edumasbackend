@@ -342,3 +342,43 @@ func GCFGetAllReportID(MONGOCONNSTRINGENV, dbname, collectionname string, r *htt
 		return GCFReturnStruct(CreateResponse(false, "Failed to Get ID Report", datareport))
 	}
 }
+
+//Function Tanggapan
+
+func GCFInsertTanggapan(publickey, MONGOCONNSTRINGENV, dbname, colladmin, colltanggapan string, r *http.Request) string {
+	var response Credential
+	response.Status = false
+	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
+	var admindata Admin
+	gettoken := r.Header.Get("token")
+	if gettoken == "" {
+		response.Message = "Missing token in headers"
+	} else {
+		// Process the request with the "Login" token
+		checktoken := watoken.DecodeGetId(os.Getenv(publickey), gettoken)
+		admindata.Username = checktoken
+		if checktoken == "" {
+			response.Message = "Invalid token"
+		} else {
+			admin2 := FindAdmin(mconn, colladmin, admindata)
+			if admin2.Role == "admin" {
+				var datatanggapan Tanggapan
+				err := json.NewDecoder(r.Body).Decode(&datatanggapan)
+				if err != nil {
+					response.Message = "Error parsing application/json: " + err.Error()
+				} else {
+					insertTanggapan(mconn, colltanggapan, Tanggapan{
+						Nik:     		datatanggapan.Nik,
+						Description: 	datatanggapan.Description,
+						DateRespons: 	datatanggapan.DateRespons,
+					})
+					response.Status = true
+					response.Message = "Berhasil Insert Tanggapan"
+				}
+			} else {
+				response.Message = "Anda tidak bisa Insert Tanggapan karena bukan Admin"
+			}
+		}
+	}
+	return GCFReturnStruct(response)
+}

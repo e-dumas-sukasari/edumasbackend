@@ -238,3 +238,45 @@ func GetAllReportID(mongoconn *mongo.Database, collection string, reportdata Rep
 	reportID := atdb.GetOneDoc[Report](mongoconn, collection, filter)
 	return reportID
 }
+
+// Function Tanggapan
+
+// Tanggapan
+func CreateNewTanggapan(mongoconn *mongo.Database, collection string, tanggapandata Tanggapan) interface{} {
+	return atdb.InsertOneDoc(mongoconn, collection, tanggapandata)
+}
+
+// Tanggapan function
+func insertTanggapan(mongoconn *mongo.Database, collection string, tanggapandata Tanggapan) interface{} {
+	return atdb.InsertOneDoc(mongoconn, collection, tanggapandata)
+}
+
+func DeleteTanggapan(mongoconn *mongo.Database, collection string, tanggapandata Tanggapan) interface{} {
+	filter := bson.M{"nik": tanggapandata.Nik}
+	return atdb.DeleteOneDoc(mongoconn, collection, filter)
+}
+
+func UpdatedTanggapan(mongoconn *mongo.Database, collection string, filter bson.M, tanggapandata Tanggapan) interface{} {
+	updatedFilter := bson.M{"nik": tanggapandata.Nik}
+	return atdb.ReplaceOneDoc(mongoconn, collection, updatedFilter, tanggapandata)
+}
+
+func GetAllTanggapan(mongoconn *mongo.Database, collection string) []Tanggapan {
+	tanggapan := atdb.GetAllDoc[[]Tanggapan](mongoconn, collection)
+	return tanggapan
+}
+
+func GetOneTanggapan(mongoconn *mongo.Database, collection string, tanggapandata Tanggapan) interface{} {
+	filter := bson.M{"nik": tanggapandata.Nik}
+	return atdb.GetOneDoc[Report](mongoconn, collection, filter)
+}
+
+func GetAllTanggapanID(mongoconn *mongo.Database, collection string, tanggapandata Tanggapan) Tanggapan {
+	filter := bson.M{
+		"nik":     		tanggapandata.Nik,
+		"description": 	tanggapandata.Description,
+		"daterespons": 	tanggapandata.DateRespons,
+	}
+	tanggapanID := atdb.GetOneDoc[Tanggapan](mongoconn, collection, filter)
+	return tanggapanID
+}

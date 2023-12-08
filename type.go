@@ -24,6 +24,13 @@ type Admin struct {
 	Public   string `json:"public,omitempty" bson:"public,omitempty"`
 } 
 
+type Tanggapan struct {
+	ID          	primitive.ObjectID 	`bson:"_id,omitempty"`
+	Nik     		int            		`json:"nik" bson:"nik"`
+    Description   	string 				`json:"description"`
+    DateRespons  	string 				`json:"daterespons"`
+}
+
 type Credential struct {
 	Status  bool   `json:"status" bson:"status"`
 	Token   string `json:"token,omitempty" bson:"token,omitempty"`
@@ -49,13 +56,14 @@ type ResponseEncode struct {
 
 type Payload struct {
 	Id   primitive.ObjectID 	`json:"id"`
-	Admin 	string				`json:"admin"`
-	User 	string				`json:"user"`
-	Report	string				`json:"report"`
-	Role 	string             	`json:"role"`
-	Exp  	time.Time          	`json:"exp"`
-	Iat  	time.Time          	`json:"iat"`
-	Nbf  	time.Time          	`json:"nbf"`
+	Admin 		string				`json:"admin"`
+	User 		string				`json:"user"`
+	Tanggapan 	string				`json:"tanggapan"`
+	Report		string				`json:"report"`
+	Role 		string             	`json:"role"`
+	Exp  		time.Time          	`json:"exp"`
+	Iat  		time.Time          	`json:"iat"`
+	Nbf  		time.Time          	`json:"nbf"`
 }
 
 type Report struct {
