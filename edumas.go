@@ -196,6 +196,11 @@ func CreateAdmin(mongoconn *mongo.Database, collection string, admindata Admin) 
 	return atdb.InsertOneDoc(mongoconn, collection, admindata)
 }
 
+func GetAllUser(mongoconn *mongo.Database, collection string) []User {
+	user := atdb.GetAllDoc[[]User](mongoconn, collection)
+	return user
+}
+
 // Report
 func CreateNewReport(mongoconn *mongo.Database, collection string, reportdata Report) interface{} {
 	return atdb.InsertOneDoc(mongoconn, collection, reportdata)
