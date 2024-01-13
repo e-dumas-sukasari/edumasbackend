@@ -28,6 +28,17 @@ func InsertUserdata(MongoConn *mongo.Database, username, role, password string) 
 	return InsertOneDoc(MongoConn, "user", req)
 }
 
+func InsertUserdataNew(MongoConn *mongo.Database, nik, nama, username, password, notelp, role string) (InsertedID interface{}) {
+	req := new(UserNew)
+	req.Nik = nik
+	req.Nama = nama
+	req.Username = username
+	req.Password = password
+	req.Notelp = notelp
+	req.Role = role
+	return InsertOneDoc(MongoConn, "usernew", req)
+}	
+
 func InsertAdmindata(MongoConn *mongo.Database, username, role, password string) (InsertedID interface{}) {
 	req := new(Admin)
 	req.Username = username
@@ -60,6 +71,12 @@ func IsPasswordValid(mongoconn *mongo.Database, collection string, userdata User
 	filter := bson.M{"username": userdata.Username}
 	res := atdb.GetOneDoc[User](mongoconn, collection, filter)
 	return CompareHashPass(userdata.Password, res.Password)
+}
+
+func IsPasswordValidUserNew(mongoconn *mongo.Database, collection string, userdata2 UserNew) bool {
+	filter := bson.M{"username": userdata2.Username}
+	res := atdb.GetOneDoc[User](mongoconn, collection, filter)
+	return CompareHashPass(userdata2.Password, res.Password)
 }
 
 func IsPasswordValidAdmin(mongoconn *mongo.Database, collection string, admindata Admin) bool {

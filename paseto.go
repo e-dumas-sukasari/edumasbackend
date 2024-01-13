@@ -32,6 +32,52 @@ func Register(Mongoenv, dbname string, r *http.Request) string {
 	return response
 }
 
+func RegisterNew(Mongoenv, dbname string, r *http.Request) string {
+	resp := new(Credential)
+	userdata2 := new(UserNew)
+	resp.Status = false
+	conn := SetConnection(Mongoenv, dbname)
+	err := json.NewDecoder(r.Body).Decode(&userdata2)
+	if err != nil {
+		resp.Message = "error parsing application/json: " + err.Error()
+	} else {
+		resp.Status = true
+		hash, err := HashPass(userdata2.Password)
+		if err != nil {
+			resp.Message = "Gagal Hash Password" + err.Error()
+		}
+		InsertUserdataNew(conn, userdata2.Nik, userdata2.Nama, userdata2.Username, userdata2.Role, hash, userdata2.Notelp)
+		resp.Message = "Berhasil Input data"
+	}
+	response := ReturnStringStruct(resp)
+	return response
+}
+
+func LoginUserNew(Privatekey, MongoEnv, dbname, Colname string, r *http.Request) string {
+	var resp Credential
+	mconn := SetConnection(MongoEnv, dbname)
+	var datauser2 UserNew
+	err := json.NewDecoder(r.Body).Decode(&datauser2)
+	if err != nil {
+		resp.Message = "error parsing application/json: " + err.Error()
+	} else {
+		if IsPasswordValidUserNew(mconn, Colname, datauser2) {
+			tokenstring, err := watoken.Encode(datauser2.Username, os.Getenv(Privatekey))
+			if err != nil {
+				resp.Message = "Gagal Encode Token : " + err.Error()
+			} else {
+				resp.Status = true
+				resp.Message = "Selamat Datang User"
+				resp.Token = tokenstring
+			}
+		} else {
+			resp.Message = "Password Salah"
+		}
+	}
+	return GCFReturnStruct(resp)
+}
+
+
 func Login(Privatekey, MongoEnv, dbname, Colname string, r *http.Request) string {
 	var resp Credential
 	mconn := SetConnection(MongoEnv, dbname)
@@ -147,7 +193,9 @@ func GCFInsertReport(publickey, MONGOCONNSTRINGENV, dbname, colluser, collreport
 					response.Message = "Error parsing application/json: " + err.Error()
 				} else {
 					insertReport(mconn, collreport, Report{
+						No:				datareport.No,
 						Nik:     		datareport.Nik,
+						Nama:			datareport.Nama,
 						Title:       	datareport.Title,
 						Description: 	datareport.Description,
 						DateOccurred: 	datareport.DateOccurred,

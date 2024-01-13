@@ -15,6 +15,18 @@ type User struct {
 	Public   string `json:"public,omitempty" bson:"public,omitempty"`
 }
 
+type UserNew struct{
+	Nik      string `json:"nik" bson:"nik"`	
+	Nama	 string `json:"nama" bson:"nama"`
+	Username string `json:"username" bson:"username"`
+	Password string `json:"password" bson:"password"`
+	Notelp	 string `json:"notelp" bson:"notelp"`
+	Role     string `json:"role,omitempty" bson:"role,omitempty"`
+	Token    string `json:"token,omitempty" bson:"token,omitempty"`
+	Private  string `json:"private,omitempty" bson:"private,omitempty"`
+	Public   string `json:"public,omitempty" bson:"public,omitempty"`
+}
+
 type Admin struct {
 	Username string `json:"username" bson:"username"`
 	Password string `json:"password" bson:"password"`
@@ -67,8 +79,10 @@ type Payload struct {
 }
 
 type Report struct {
-	ID          	primitive.ObjectID 	`bson:"_id,omitempty" `
+	ID          	primitive.ObjectID 	`bson:"_id,omitempty"`
+	No				int					`json:"no" bson:"no"`
 	Nik     		int            		`json:"nik" bson:"nik"`
+	Nama			string				`json:"nama" bson:"nama"`
     Title         	string 				`json:"title"`
     Description   	string 				`json:"description"`
     DateOccurred  	string 				`json:"dateOccurred"`

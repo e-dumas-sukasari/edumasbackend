@@ -93,9 +93,11 @@ func TestGFCPostHandlerAdmin(t *testing.T) {
 func TestReport(t *testing.T) {
 	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	var reportdata Report
-	reportdata.Nik = 12121
+	reportdata.No = 1
+	reportdata.Nik = 121213
+	reportdata.Nama = "ujang"
 	reportdata.Title = "Jalan Rusak"
-	reportdata.Description = "Di sarijadi ada jalan bolong rusak"
+	reportdata.Description = "Di sarijadi ada jalan bolong rusak tepatnya di sariasih"
 	reportdata.DateOccurred = "18-11-2024"
 	reportdata.Image = "https://images3.alphacoders.com/165/thumb-1920-165265.jpg"
 	CreateNewReport(mconn, "report", reportdata)
@@ -216,6 +218,15 @@ func TestLoginn(t *testing.T) {
 	userdata.Password = "edumaspass"
 	IsPasswordValid(mconn, "user", userdata)
 	fmt.Println(userdata)
+}
+
+func TestLoginnNew(t *testing.T) {
+	mconn := SetConnection("MONGOSTRING", "edumasapk")
+	var userdata2 User
+	userdata2.Username = "edumas"
+	userdata2.Password = "edumaspass"
+	IsPasswordValid(mconn, "usernew", userdata2)
+	fmt.Println(userdata2)
 }
 
 func TestLoginnAdmin(t *testing.T) {
