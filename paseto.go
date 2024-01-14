@@ -175,9 +175,9 @@ func GCFInsertReport(publickey, MONGOCONNSTRINGENV, dbname, colluser, collreport
 	response.Status = false
 	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
 	var userdata User
-	gettoken := r.Header.Get("token")
+	gettoken := r.Header.Get("Login")
 	if gettoken == "" {
-		response.Message = "Missing token in headers"
+		response.Message = "Missing Login in headers"
 	} else {
 		// Process the request with the "Login" token
 		checktoken := watoken.DecodeGetId(os.Getenv(publickey), gettoken)
@@ -258,9 +258,9 @@ func GCFDeleteReportForAdmin(publickey, MONGOCONNSTRINGENV, dbname, colladmin, c
 	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
 	var admindata Admin
 
-	gettoken := r.Header.Get("token")
+	gettoken := r.Header.Get("Login")
 	if gettoken == "" {
-		respon.Message = "Missing token in headers"
+		respon.Message = "Missing Login in headers"
 	} else {
 		// Process the request with the "Login" token
 		checktoken := watoken.DecodeGetId(os.Getenv(publickey), gettoken)
@@ -332,9 +332,9 @@ func GCFUpdateReportForAdmin(publickey, MONGOCONNSTRINGENV, dbname, colladmin, c
 	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
 	var admindata Admin
 
-	gettoken := r.Header.Get("token")
+	gettoken := r.Header.Get("Login")
 	if gettoken == "" {
-		response.Message = "Missing token in Headers"
+		response.Message = "Missing Login in Headers"
 	} else {
 		checktoken := watoken.DecodeGetId(os.Getenv(publickey), gettoken)
 		admindata.Username = checktoken
@@ -429,9 +429,9 @@ func GCFInsertTanggapan(publickey, MONGOCONNSTRINGENV, dbname, colladmin, collta
 	response.Status = false
 	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
 	var admindata Admin
-	gettoken := r.Header.Get("token")
+	gettoken := r.Header.Get("Login")
 	if gettoken == "" {
-		response.Message = "Missing token in headers"
+		response.Message = "Missing Login in headers"
 	} else {
 		// Process the request with the "Login" token
 		checktoken := watoken.DecodeGetId(os.Getenv(publickey), gettoken)
