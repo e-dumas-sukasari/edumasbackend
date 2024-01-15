@@ -251,7 +251,7 @@ func GCFInsertReport(publickey, MONGOCONNSTRINGENV, dbname, colluser, collreport
 // }
 
 //Delete Report For Admin
-func GCFDeleteReportForAdmin(publickey, MONGOCONNSTRINGENV, dbname, colladmin, collreport string, r *http.Request) string {
+func GCFDeleteReportForAdminn(publickey, MONGOCONNSTRINGENV, dbname, colladmin, collreport string, r *http.Request) string {
 
 	var respon Credential
 	respon.Status = false
