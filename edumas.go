@@ -81,6 +81,18 @@ func CreateNewUserRole(mongoconn *mongo.Database, collection string, userdata Us
 	return atdb.InsertOneDoc(mongoconn, collection, userdata)
 }
 
+func CreateNewUserRoleNew(mongoconn *mongo.Database, collection string, userdata UserNew) interface{} {
+	// Hash the password before storing it
+	hashedPassword, err := HashPass(userdata.Password)
+	if err != nil {
+		return err
+	}
+	userdata.Password = hashedPassword
+
+	// Insert the user data into the database
+	return atdb.InsertOneDoc(mongoconn, collection, userdata)
+}
+
 //user
 func CreateUserAndAddToken(privateKeyEnv string, mongoconn *mongo.Database, collection string, userdata User) error {
 	// Hash the password before storing it
@@ -242,6 +254,22 @@ func GetAllReportID(mongoconn *mongo.Database, collection string, reportdata Rep
 	}
 	reportID := atdb.GetOneDoc[Report](mongoconn, collection, filter)
 	return reportID
+}
+
+func GetIDReport(mongoconn *mongo.Database, collection string, reportdata Report) Report {
+	filter := bson.M{"nik": reportdata.Nik}
+	return atdb.GetOneDoc[Report](mongoconn, collection, filter)
+}
+
+// func GetOneReportData(mongoconn *mongo.Database, colname, Nik string) (dest Report) {
+// 	filter := bson.M{"nik": Nik}
+// 	dest = atdb.GetOneDoc[Report](mongoconn, colname, filter)
+// 	return
+// }
+
+func GetOneReportData(mongoenv *mongo.Database, collname string, reportdata Report) Report {
+	filter := bson.M{"nik": reportdata.Nik}	
+	return atdb.GetOneDoc[Report](mongoenv, collname, filter)
 }
 
 // Function Tanggapan

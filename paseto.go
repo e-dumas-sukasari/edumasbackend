@@ -46,7 +46,7 @@ func RegisterNew(Mongoenv, dbname string, r *http.Request) string {
 		if err != nil {
 			resp.Message = "Gagal Hash Password" + err.Error()
 		}
-		InsertUserdataNew(conn, userdata2.Nik, userdata2.Nama, userdata2.Username, userdata2.Role, hash, userdata2.Notelp)
+		InsertUserdataNew(conn, userdata2.Nama, userdata2.Username, userdata2.Role, hash, userdata2.Notelp)
 		resp.Message = "Berhasil Input data"
 	}
 	response := ReturnStringStruct(resp)
@@ -414,13 +414,46 @@ func GCFGetAllReportID(MONGOCONNSTRINGENV, dbname, collectionname string, r *htt
 		return err.Error()
 	}
 
-	report := GetAllReportID(mconn, collectionname, datareport)
+	report := GetIDReport(mconn, collectionname, datareport)
 	if report != (Report{}) {
 		return GCFReturnStruct(CreateResponse(true, "Success: Get ID Report", datareport))
 	} else {
 		return GCFReturnStruct(CreateResponse(false, "Failed to Get ID Report", datareport))
 	}
 }
+
+// Get One
+// func GetOneReport(PublicKey, MongoEnv, dbname, colname string, r *http.Request) string {
+// 	req := new(Response)
+// 	conn := SetConnection(MongoEnv, dbname)
+// 	tokenlogin := r.Header.Get("Login")
+// 	if tokenlogin == "" {
+// 		req.Status = false
+// 		req.Message = "Header Login Not Found"
+// 	} else {
+// 		// Dekode token untuk mendapatkan
+// 		_, err := DecodeGetReport(os.Getenv(PublicKey), tokenlogin)
+// 		if err != nil {
+// 			req.Status = false
+// 			req.Message = "Tidak ada data  " + tokenlogin
+// 		} else {
+// 			// Langsung ambil data report
+// 			datareport := GetOneReportData(conn, colname, Response)
+// 			if datareport == nil {
+// 				req.Status = false
+// 				req.Message = "Data Report tidak ada"
+// 			} else {
+// 				req.Status = true
+// 				req.Message = "Data Report berhasil diambil"
+// 				req.Data = datareport
+// 			}
+// 		}
+// 	}
+// 	return ReturnStringStruct(req)
+// }
+
+
+
 
 //Function Tanggapan
 
