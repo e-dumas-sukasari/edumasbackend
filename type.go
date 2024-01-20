@@ -82,9 +82,9 @@ type Report struct {
 	No				int					`json:"no" bson:"no"`
 	Nik     		int            		`json:"nik" bson:"nik"`
 	Nama			string				`json:"nama" bson:"nama"`
-    Title         	string 				`json:"title"`
-    Description   	string 				`json:"description"`
-    DateOccurred  	string 				`json:"dateOccurred"`
+    Title         	string 				`json:"title" bson:"title"`
+    Description   	string 				`json:"description" bson:"description"`
+    DateOccurred  	string 				`json:"dateOccurred" bson:"dateOccured"`
 	Image       	string             	`json:"image" bson:"image"`
 	Status      	bool               	`json:"status" bson:"status"`
 }

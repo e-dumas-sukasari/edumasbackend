@@ -243,20 +243,33 @@ func GetAllReport(mongoconn *mongo.Database, collection string) []Report {
 	return report
 }
 
+func FindReport(mongoconn *mongo.Database, collection string, reportdata Report) Report {
+	filter := bson.M{
+		"nik": reportdata.Nik,
+	}
+	return atdb.GetOneDoc[Report](mongoconn, collection, filter)
+}
+
 func GetAllReportID(mongoconn *mongo.Database, collection string, reportdata Report) Report {
 	filter := bson.M{
+		"no":			reportdata.No,
 		"nik":     		reportdata.Nik,
+		"nama":			reportdata.Nama,
 		"title":       	reportdata.Title,
 		"description": 	reportdata.Description,
-		"dateOccurred": reportdata.DateOccurred,
+		"dateOccurred": reportdata.DateOccurred,	
 		"image":       	reportdata.Image,
-		"status":		reportdata.Status,
 	}
 	reportID := atdb.GetOneDoc[Report](mongoconn, collection, filter)
 	return reportID
 }
 
 func GetIDReport(mongoconn *mongo.Database, collection string, reportdata Report) Report {
+	filter := bson.M{"nik": reportdata.Nik}
+	return atdb.GetOneDoc[Report](mongoconn, collection, filter)
+}
+
+func GetOneReport(mongoconn *mongo.Database, collection string, reportdata Report) Report {
 	filter := bson.M{"nik": reportdata.Nik}
 	return atdb.GetOneDoc[Report](mongoconn, collection, filter)
 }

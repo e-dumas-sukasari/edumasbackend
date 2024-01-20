@@ -404,7 +404,7 @@ func GetAllDataReports(PublicKey, MongoEnv, dbname, colname string, r *http.Requ
 	return ReturnStringStruct(req)
 }
 
-// get all report by id
+// get all report by Nik
 func GCFGetAllReportID(MONGOCONNSTRINGENV, dbname, collectionname string, r *http.Request) string {
 	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
 
@@ -414,12 +414,37 @@ func GCFGetAllReportID(MONGOCONNSTRINGENV, dbname, collectionname string, r *htt
 		return err.Error()
 	}
 
-	report := GetIDReport(mconn, collectionname, datareport)
+	report := GetAllReportID(mconn, collectionname, datareport)
 	if report != (Report{}) {
-		return GCFReturnStruct(CreateResponse(true, "Success: Get ID Report", datareport))
+		return GCFReturnStruct(CreateResponse(true, "Success: Get NIK Report", datareport))
 	} else {
-		return GCFReturnStruct(CreateResponse(false, "Failed to Get ID Report", datareport))
+		return GCFReturnStruct(CreateResponse(false, "Failed to Get NIK Report", datareport))
 	}
+}
+
+func GCFFindReportByNik(MONGOCONNSTRINGENV, dbname, collectionname string, r *http.Request) string {
+	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
+	var datareport Report
+	err := json.NewDecoder(r.Body).Decode(&datareport)
+	if err != nil {
+		return err.Error()
+	}
+
+	// Jika report kosong, maka respon "false" dan data tidak ada
+	if datareport.Nik ==  0 {
+		return "false"
+	}
+
+	// Jika ada report, mencari data report
+	report := FindReport(mconn, collectionname, datareport)
+
+	// Jika data report ditemukan, mengembalikan data pengguna dalam format yang sesuai
+	if report != (Report{}) {
+		return GCFReturnStruct(report)
+	}
+
+	// Jika tidak ada data report yang ditemukan, mengembalikan "false" dan data tidak ada
+	return "false"
 }
 
 // Get One
