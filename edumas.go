@@ -213,6 +213,13 @@ func GetAllUser(mongoconn *mongo.Database, collection string) []User {
 	return user
 }
 
+func FindUserUser(mongoconn *mongo.Database, collection string, userdata User) User {
+	filter := bson.M{
+		"username": userdata.Username,
+	}
+	return atdb.GetOneDoc[User](mongoconn, collection, filter)
+}
+
 // Report
 func CreateNewReport(mongoconn *mongo.Database, collection string, reportdata Report) interface{} {
 	return atdb.InsertOneDoc(mongoconn, collection, reportdata)
@@ -252,19 +259,13 @@ func FindReport(mongoconn *mongo.Database, collection string, reportdata Report)
 
 func GetAllReportID(mongoconn *mongo.Database, collection string, reportdata Report) Report {
 	filter := bson.M{
-		"no":			reportdata.No,
 		"nik":     		reportdata.Nik,
-		"nama":			reportdata.Nama,
-		"title":       	reportdata.Title,
-		"description": 	reportdata.Description,
-		"dateOccurred": reportdata.DateOccurred,	
-		"image":       	reportdata.Image,
 	}
 	reportID := atdb.GetOneDoc[Report](mongoconn, collection, filter)
 	return reportID
 }
 
-func GetIDReport(mongoconn *mongo.Database, collection string, reportdata Report) Report {
+func GetOneReportNik(mongoconn *mongo.Database, collection string, reportdata Report) Report {
 	filter := bson.M{"nik": reportdata.Nik}
 	return atdb.GetOneDoc[Report](mongoconn, collection, filter)
 }

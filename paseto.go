@@ -132,6 +132,30 @@ func GetAllDataUser(PublicKey, MongoEnv, dbname, colname string, r *http.Request
 	return ReturnStringStruct(req)
 }
 
+func GCFFindUserByName(MONGOCONNSTRINGENV, dbname, collectionname string, r *http.Request) string {
+	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
+	var datauser User
+	err := json.NewDecoder(r.Body).Decode(&datauser)
+	if err != nil {
+		return err.Error()
+	}
+
+	// Jika username kosong, maka respon "false" dan data tidak ada
+	if datauser.Username == "" {
+		return "false"
+	}
+
+	// Jika ada username, mencari data pengguna
+	user := FindUserUser(mconn, collectionname, datauser)
+
+	// Jika data pengguna ditemukan, mengembalikan data pengguna dalam format yang sesuai
+	if user != (User{}) {
+		return GCFReturnStruct(user)
+	}
+
+	// Jika tidak ada data pengguna yang ditemukan, mengembalikan "false" dan data tidak ada
+	return "false"
+}
 
 //Function Admin
 func LoginAdmin(Privatekey, MongoEnv, dbname, Colname string, r *http.Request) string {
@@ -446,6 +470,7 @@ func GCFFindReportByNik(MONGOCONNSTRINGENV, dbname, collectionname string, r *ht
 	// Jika tidak ada data report yang ditemukan, mengembalikan "false" dan data tidak ada
 	return "false"
 }
+
 
 // Get One
 // func GetOneReport(PublicKey, MongoEnv, dbname, colname string, r *http.Request) string {
