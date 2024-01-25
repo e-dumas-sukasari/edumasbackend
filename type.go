@@ -16,7 +16,6 @@ type User struct {
 }
 
 type UserNew struct{
-	Nama	 string `json:"nama" bson:"nama"`
 	Username string `json:"username" bson:"username"`
 	Password string `json:"password" bson:"password"`
 	Notelp	 string `json:"notelp" bson:"notelp"`

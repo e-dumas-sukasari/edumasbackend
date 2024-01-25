@@ -83,9 +83,8 @@ func TestGFCPostHandlerUser(t *testing.T) {
 func TestGFCPostHandlerUserNew(t *testing.T) {
 	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	var userdata UserNew
-	userdata.Nama = "Tes"
-	userdata.Username = "bal123"
-	userdata.Password = "bal123"
+	userdata.Username = "balusername"
+	userdata.Password = "balpassword"
 	userdata.Role = "user"
 	userdata.Notelp = "08113232132"
 	CreateNewUserRoleNew(mconn, "user", userdata)
