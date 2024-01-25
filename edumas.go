@@ -281,9 +281,9 @@ func GetOneReport(mongoconn *mongo.Database, collection string, reportdata Repor
 // 	return
 // }
 
-func GetOneReportData(mongoenv *mongo.Database, collname string, reportdata Report) Report {
+func GetOneReportData(mongoconn *mongo.Database, collname string, reportdata Report) Report {
 	filter := bson.M{"nik": reportdata.Nik}	
-	return atdb.GetOneDoc[Report](mongoenv, collname, filter)
+	return atdb.GetOneDoc[Report](mongoconn, collname, filter)
 }
 
 // Function Tanggapan

@@ -46,7 +46,7 @@ func RegisterNew(Mongoenv, dbname string, r *http.Request) string {
 		if err != nil {
 			resp.Message = "Gagal Hash Password" + err.Error()
 		}
-		InsertUserdataNew(conn, userdata2.Username , hash, userdata2.Notelp, userdata2.Role)
+		InsertUserdataNew(conn, userdata2.Username , userdata2.Notelp, userdata2.Role, hash)
 		resp.Message = "Berhasil Input data"
 	}
 	response := ReturnStringStruct(resp)
@@ -471,8 +471,8 @@ func GCFFindReportByNik(MONGOCONNSTRINGENV, dbname, collectionname string, r *ht
 }
 
 
-// Get One
-// func GetOneReport(PublicKey, MongoEnv, dbname, colname string, r *http.Request) string {
+//Get One
+// func GetOneReports(PublicKey, MongoEnv, dbname, colname string, r *http.Request) string {
 // 	req := new(Response)
 // 	conn := SetConnection(MongoEnv, dbname)
 // 	tokenlogin := r.Header.Get("Login")
@@ -487,7 +487,7 @@ func GCFFindReportByNik(MONGOCONNSTRINGENV, dbname, collectionname string, r *ht
 // 			req.Message = "Tidak ada data  " + tokenlogin
 // 		} else {
 // 			// Langsung ambil data report
-// 			datareport := GetOneReportData(conn, colname, Response)
+// 			datareport := GetOneReportData(conn, colname, Report{Nik: })
 // 			if datareport == nil {
 // 				req.Status = false
 // 				req.Message = "Data Report tidak ada"

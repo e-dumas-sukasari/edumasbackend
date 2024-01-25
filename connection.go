@@ -28,7 +28,7 @@ func InsertUserdata(MongoConn *mongo.Database, username, role, password string) 
 	return InsertOneDoc(MongoConn, "user", req)
 }
 
-func InsertUserdataNew(MongoConn *mongo.Database, username, password, notelp, role string) (InsertedID interface{}) {
+func InsertUserdataNew(MongoConn *mongo.Database, username, notelp, role, password string) (InsertedID interface{}) {
 	req := new(UserNew)
 	req.Username = username
 	req.Password = password
