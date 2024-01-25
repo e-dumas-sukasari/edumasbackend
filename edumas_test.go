@@ -103,7 +103,6 @@ func TestGFCPostHandlerAdmin(t *testing.T) {
 func TestReport(t *testing.T) {
 	mconn := SetConnection("MONGOSTRING", "edumasdb")
 	var reportdata Report
-	reportdata.No = 1
 	reportdata.Nik = 121213
 	reportdata.Nama = "ujang"
 	reportdata.Title = "Jalan Rusak"

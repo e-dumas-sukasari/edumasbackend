@@ -78,7 +78,6 @@ type Payload struct {
 
 type Report struct {
 	ID          	primitive.ObjectID 	`bson:"_id,omitempty"`
-	No				int					`json:"no" bson:"no"`
 	Nik     		int            		`json:"nik" bson:"nik"`
 	Nama			string				`json:"nama" bson:"nama"`
     Title         	string 				`json:"title" bson:"title"`

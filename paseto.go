@@ -217,7 +217,6 @@ func GCFInsertReport(publickey, MONGOCONNSTRINGENV, dbname, colluser, collreport
 					response.Message = "Error parsing application/json: " + err.Error()
 				} else {
 					insertReport(mconn, collreport, Report{
-						No:				datareport.No,
 						Nik:     		datareport.Nik,
 						Nama:			datareport.Nama,
 						Title:       	datareport.Title,
