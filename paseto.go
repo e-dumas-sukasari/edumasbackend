@@ -236,42 +236,6 @@ func GCFInsertReport(publickey, MONGOCONNSTRINGENV, dbname, colluser, collreport
 	return GCFReturnStruct(response)
 }
 
-// // delete report
-// func GCFDeleteReport(publickey, MONGOCONNSTRINGENV, dbname, colluser, collreport string, r *http.Request) string {
-
-// 	var respon Credential
-// 	respon.Status = false
-// 	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
-// 	var userdata User
-
-// 	gettoken := r.Header.Get("token")
-// 	if gettoken == "" {
-// 		respon.Message = "Missing token in headers"
-// 	} else {
-// 		// Process the request with the "Login" token
-// 		checktoken := watoken.DecodeGetId(os.Getenv(publickey), gettoken)
-// 		userdata.Username = checktoken
-// 		if checktoken == "" {
-// 			respon.Message = "Invalid token"
-// 		} else {
-// 			user2 := FindUser(mconn, colluser, userdata)
-// 			if user2.Role == "user" {
-// 				var datareport Report
-// 				err := json.NewDecoder(r.Body).Decode(&datareport)
-// 				if err != nil {
-// 					respon.Message = "Error parsing application/json: " + err.Error()
-// 				} else {
-// 					DeleteReport(mconn, collreport, datareport)
-// 					respon.Status = true
-// 					respon.Message = "Berhasil Delete Report"
-// 				}
-// 			} else {
-// 				respon.Message = "Anda tidak bisa Delete data karena bukan User"
-// 			}
-// 		}
-// 	}
-// 	return GCFReturnStruct(respon)
-// }
 
 //Delete Report For Admin
 func GCFDeleteReportForAdmin(publickey, MONGOCONNSTRINGENV, dbname, colladmin, collreport string, r *http.Request) string {
@@ -310,43 +274,6 @@ func GCFDeleteReportForAdmin(publickey, MONGOCONNSTRINGENV, dbname, colladmin, c
 	return GCFReturnStruct(respon)
 }
 
-// // update Report
-// func GCFUpdateReport(publickey, MONGOCONNSTRINGENV, dbname, colluser, collreport string, r *http.Request) string {
-// 	var response Credential
-// 	response.Status = false
-// 	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
-// 	var userdata User
-
-// 	gettoken := r.Header.Get("token")
-// 	if gettoken == "" {
-// 		response.Message = "Missing token in Headers"
-// 	} else {
-// 		checktoken := watoken.DecodeGetId(os.Getenv(publickey), gettoken)
-// 		userdata.Username = checktoken
-// 		if checktoken == "" {
-// 			response.Message = "Invalid token"
-// 		} else {
-// 			user2 := FindUser(mconn, colluser, userdata)
-// 			if user2.Role == "user" {
-// 				var datareport Report
-// 				err := json.NewDecoder(r.Body).Decode(&datareport)
-// 				if err != nil {
-// 					response.Message = "Error parsing application/json: " + err.Error()
-
-// 				} else {
-// 					UpdatedReport(mconn, collreport, bson.M{"id": datareport.ID}, datareport)
-// 					response.Status = true
-// 					response.Message = "Berhasil Update Report"
-// 					GCFReturnStruct(CreateResponse(true, "Success Update Report", datareport))
-// 				}
-// 			} else {
-// 				response.Message = "Anda tidak bisa Update data karena bukan User"
-// 			}
-
-// 		}
-// 	}
-// 	return GCFReturnStruct(response)
-// }
 
 // Update report for admin
 func GCFUpdateReportForAdmin(publickey, MONGOCONNSTRINGENV, dbname, colladmin, collreport string, r *http.Request) string {
@@ -384,6 +311,80 @@ func GCFUpdateReportForAdmin(publickey, MONGOCONNSTRINGENV, dbname, colladmin, c
 		}
 	}
 	return GCFReturnStruct(response)
+}
+
+// Update report for admin
+func GCFUpdateUserForAdmin(publickey, MONGOCONNSTRINGENV, dbname, colladmin, colluser string, r *http.Request) string {
+	var response Credential
+	response.Status = false
+	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
+	var admindata Admin
+
+	gettoken := r.Header.Get("Login")
+	if gettoken == "" {
+		response.Message = "Missing Login in Headers"
+	} else {
+		checktoken := watoken.DecodeGetId(os.Getenv(publickey), gettoken)
+		admindata.Username = checktoken
+		if checktoken == "" {
+			response.Message = "Invalid token"
+		} else {
+			admin2 := FindAdmin(mconn, colladmin, admindata)
+			if admin2.Role == "admin" {
+				var datauser UserNew
+				err := json.NewDecoder(r.Body).Decode(&datauser)
+				if err != nil {
+					response.Message = "Error parsing application/json: " + err.Error()
+
+				} else {
+					UpdatedUser(mconn, colluser, bson.M{"username": datauser.Username}, datauser)
+					response.Status = true
+					response.Message = "Berhasil Update User"
+					GCFReturnStruct(CreateResponse(true, "Success Update User", datauser))
+				}
+			} else {
+				response.Message = "Anda tidak bisa Update data karena bukan Admin"
+			}
+
+		}
+	}
+	return GCFReturnStruct(response)
+}
+
+func GCFDeleteUserForAdmin(publickey, MONGOCONNSTRINGENV, dbname, colladmin, colluser string, r *http.Request) string {
+
+	var respon Credential
+	respon.Status = false
+	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
+	var admindata Admin
+
+	gettoken := r.Header.Get("Login")
+	if gettoken == "" {
+		respon.Message = "Missing Login in headers"
+	} else {
+		// Process the request with the "Login" token
+		checktoken := watoken.DecodeGetId(os.Getenv(publickey), gettoken)
+		admindata.Username = checktoken
+		if checktoken == "" {
+			respon.Message = "Invalid token"
+		} else {
+			admin2 := FindAdmin(mconn, colladmin, admindata)
+			if admin2.Role == "admin" {
+				var datauser UserNew
+				err := json.NewDecoder(r.Body).Decode(&datauser)
+				if err != nil {
+					respon.Message = "Error parsing application/json: " + err.Error()
+				} else {
+					Deleteuser(mconn, colluser, datauser)
+					respon.Status = true
+					respon.Message = "Berhasil Delete User"
+				}
+			} else {
+				respon.Message = "Anda tidak bisa Delete data karena bukan Admin"
+			}
+		}
+	}
+	return GCFReturnStruct(respon)
 }
 
 // get all report
@@ -438,6 +439,23 @@ func GCFGetAllReportID(MONGOCONNSTRINGENV, dbname, collectionname string, r *htt
 	}
 
 	report := GetAllReportID(mconn, collectionname, datareport)
+	if report != (Report{}) {
+		return GCFReturnStruct(CreateResponse(true, "Success: Get NIK Report", datareport))
+	} else {
+		return GCFReturnStruct(CreateResponse(false, "Failed to Get NIK Report", datareport))
+	}
+}
+
+func GCFGetAllReportNik(MONGOCONNSTRINGENV, dbname, collectionname string, r *http.Request) string {
+	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
+
+	var datareport Report
+	err := json.NewDecoder(r.Body).Decode(&datareport)
+	if err != nil {
+		return err.Error()
+	}
+
+	report := FindOneReport(mconn, collectionname, datareport)
 	if report != (Report{}) {
 		return GCFReturnStruct(CreateResponse(true, "Success: Get NIK Report", datareport))
 	} else {

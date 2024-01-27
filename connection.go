@@ -3,6 +3,7 @@ package edumasbackend
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/aiteung/atdb"
@@ -58,6 +59,28 @@ func FindUser(mongoconn *mongo.Database, collection string, userdata User) User 
 func FindAdmin(mongoconn *mongo.Database, collection string, admindata Admin) Admin {
 	filter := bson.M{"username": admindata.Username}
 	return atdb.GetOneDoc[Admin](mongoconn, collection, filter)
+}
+
+func FindOneReport(mongoconn *mongo.Database, collection string, reportdata Report) Report {
+	filter := bson.M{
+		"nik": reportdata.Nik,
+	}
+
+	var result Report
+
+	// Use the FindOne method to retrieve a single document
+	err := mongoconn.Collection(collection).FindOne(context.TODO(), filter).Decode(&result)
+	//resulnya hanya nama saja
+	result = Report{
+		Nik: result.Nik,
+	}
+
+	if err != nil {
+		log.Printf("Error finding Report: %v\n", err)
+		return Report{}
+	}
+
+	return result
 }
 
 func IsExist(Tokenstr, PublicKey string) bool {

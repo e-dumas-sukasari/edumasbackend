@@ -220,6 +220,16 @@ func FindUserUser(mongoconn *mongo.Database, collection string, userdata User) U
 	return atdb.GetOneDoc[User](mongoconn, collection, filter)
 }
 
+func Deleteuser(mongoconn *mongo.Database, collection string, userdata2 UserNew) interface{} {
+	filter := bson.M{"username": userdata2.Username}
+	return atdb.DeleteOneDoc(mongoconn, collection, filter)
+}
+
+func UpdatedUser(mongoconn *mongo.Database, collection string, filter bson.M, userdata2 UserNew) interface{} {
+	updatedFilter := bson.M{"username": userdata2.Username}
+	return atdb.ReplaceOneDoc(mongoconn, collection, updatedFilter, userdata2)
+}
+
 // Report
 func CreateNewReport(mongoconn *mongo.Database, collection string, reportdata Report) interface{} {
 	return atdb.InsertOneDoc(mongoconn, collection, reportdata)
@@ -259,7 +269,7 @@ func FindReport(mongoconn *mongo.Database, collection string, reportdata Report)
 
 func GetAllReportID(mongoconn *mongo.Database, collection string, reportdata Report) Report {
 	filter := bson.M{
-		"nik":     		reportdata.Nik,
+		"nik": reportdata.Nik,
 	}
 	reportID := atdb.GetOneDoc[Report](mongoconn, collection, filter)
 	return reportID
