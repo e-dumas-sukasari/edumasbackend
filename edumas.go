@@ -208,8 +208,8 @@ func CreateAdmin(mongoconn *mongo.Database, collection string, admindata Admin) 
 	return atdb.InsertOneDoc(mongoconn, collection, admindata)
 }
 
-func GetAllUser(mongoconn *mongo.Database, collection string) []User {
-	user := atdb.GetAllDoc[[]User](mongoconn, collection)
+func GetAllUser(mongoconn *mongo.Database, collection string) []UserNew {
+	user := atdb.GetAllDoc[[]UserNew](mongoconn, collection)
 	return user
 }
 
