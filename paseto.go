@@ -7,6 +7,7 @@ import (
 
 	"github.com/whatsauth/watoken"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // <--- ini Login & Register User --->
@@ -486,6 +487,41 @@ func GCFFindReportByNik(MONGOCONNSTRINGENV, dbname, collectionname string, r *ht
 
 	// Jika tidak ada data report yang ditemukan, mengembalikan "false" dan data tidak ada
 	return "false"
+}
+
+func GetOneDataReport(MONGOCONNSTRINGENV, dbname, collectionname string, r *http.Request) string {
+	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
+	resp := new(Credential)
+	reportdata := new(Report)
+	resp.Status = false
+	err := json.NewDecoder(r.Body).Decode(&reportdata)
+
+	id := r.URL.Query().Get("_id")
+	if id == "" {
+		resp.Message = "Missing '_id' parameter in the URL"
+		return GCFReturnStruct(resp)
+	}
+
+	ID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		resp.Message = "Invalid '_id' parameter in the URL"
+		return GCFReturnStruct(resp)
+	}
+
+	reportdata.ID = ID
+
+	// Menggunakan fungsi GetProdukFromID untuk mendapatkan data produk berdasarkan ID
+	reportdata, err = GetReportFromID(mconn, collectionname, ID)
+	if err != nil {
+		resp.Message = err.Error()
+		return GCFReturnStruct(resp)
+	}
+
+	resp.Status = true
+	resp.Message = "Get Data Berhasil"
+	resp.Data = []Report{*reportdata}
+
+	return GCFReturnStruct(resp)
 }
 
 

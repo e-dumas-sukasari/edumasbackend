@@ -45,6 +45,7 @@ type Credential struct {
 	Status  bool   `json:"status" bson:"status"`
 	Token   string `json:"token,omitempty" bson:"token,omitempty"`
 	Message string `json:"message,omitempty" bson:"message,omitempty"`
+	Data    []Report `bson:"data,omitempty" json:"data,omitempty"`
 }
 
 type ResponseDataUser struct {
@@ -77,14 +78,14 @@ type Payload struct {
 }
 
 type Report struct {
-	ID          	primitive.ObjectID 	`bson:"_id,omitempty"`
-	Nik     		int            		`json:"nik" bson:"nik"`
-	Nama			string				`json:"nama" bson:"nama"`
-    Title         	string 				`json:"title" bson:"title"`
-    Description   	string 				`json:"description" bson:"description"`
-    DateOccurred  	string 				`json:"dateOccurred" bson:"dateOccured"`
-	Image       	string             	`json:"image" bson:"image"`
-	Status      	bool               	`json:"status" bson:"status"`
+	ID          	primitive.ObjectID 	`bson:"_id,omitempty" json:"_id,omitempty"`
+	Nik     		int            		`json:"nik" bson:"nik" json:"nik,omitempty`
+	Nama			string				`json:"nama" bson:"nama" json:"nama,omitempty`
+    Title         	string 				`json:"title" bson:"title" json:"title,omitempty`
+    Description   	string 				`json:"description" bson:"description" json:"description,omitempty`
+    DateOccurred  	string 				`json:"dateOccurred" bson:"dateOccured" json:"dataOccurred,omitempty`
+	Image       	string             	`json:"image" bson:"image" json:"image,omitempty`
+	Status      	bool               	`json:"status" bson:"status" json:"status,omitempty`
 }
 
 type Contact struct {

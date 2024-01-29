@@ -2,6 +2,7 @@ package edumasbackend
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 
@@ -283,6 +284,23 @@ func GetOneReportNik(mongoconn *mongo.Database, collection string, reportdata Re
 func GetOneReport(mongoconn *mongo.Database, collection string, reportdata Report) Report {
 	filter := bson.M{"nik": reportdata.Nik}
 	return atdb.GetOneDoc[Report](mongoconn, collection, filter)
+}
+
+func GetReportFromID(db *mongo.Database, col string, _id primitive.ObjectID) (*Report, error) {
+	cols := db.Collection(col)
+	filter := bson.M{"_id": _id}
+
+	reportlist := new(Report)
+
+	err := cols.FindOne(context.Background(), filter).Decode(reportlist)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return nil, fmt.Errorf("no data found for ID %s", _id.Hex())
+		}
+		return nil, fmt.Errorf("error retrieving data for ID %s: %s", _id.Hex(), err.Error())
+	}
+
+	return reportlist, nil
 }
 
 // func GetOneReportData(mongoconn *mongo.Database, colname, Nik string) (dest Report) {
