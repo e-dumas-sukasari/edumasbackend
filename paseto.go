@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/whatsauth/watoken"
 	"go.mongodb.org/mongo-driver/bson"
@@ -472,6 +473,42 @@ func GetOneDataReport(MONGOCONNSTRINGENV, dbname, collectionname string, r *http
 
 	// Menggunakan fungsi GetProdukFromID untuk mendapatkan data produk berdasarkan ID
 	reportdata, err = GetReportFromID(mconn, collectionname, ID)
+	if err != nil {
+		resp.Message = err.Error()
+		return GCFReturnStruct(resp)
+	}
+
+	resp.Status = true
+	resp.Message = "Get Data Berhasil"
+	resp.Data = []Report{*reportdata}
+
+	return GCFReturnStruct(resp)
+}
+
+func GetOneDataReports(MONGOCONNSTRINGENV, dbname, collectionname string, r *http.Request) string {
+	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
+	resp := new(Credential)
+	reportdata := new(Report)
+	resp.Status = false
+
+	err := json.NewDecoder(r.Body).Decode(&reportdata)
+
+	nik := r.URL.Query().Get("nik")
+	if nik == "" {
+		resp.Message = "Missing 'nik' parameter in the URL"
+		return GCFReturnStruct(resp)
+	}
+
+	ID, err := strconv.Atoi(nik)
+	if err != nil {
+		resp.Message = "Invalid 'nik' parameter in the URL"
+		return GCFReturnStruct(resp)
+	}
+
+	reportdata.Nik = ID
+
+	// Menggunakan fungsi GetProdukFromID untuk mendapatkan data produk berdasarkan ID
+	reportdata, err = GetReportFromIDs(mconn, collectionname, ID)
 	if err != nil {
 		resp.Message = err.Error()
 		return GCFReturnStruct(resp)

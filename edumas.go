@@ -303,6 +303,23 @@ func GetReportFromID(db *mongo.Database, col string, _id primitive.ObjectID) (*R
 	return reportlist, nil
 }
 
+func GetReportFromIDs(db *mongo.Database, col string, _id int) (*Report, error) {
+	cols := db.Collection(col)
+	filter := bson.M{"nik": _id}
+
+	reportlist := new(Report)
+
+	err := cols.FindOne(context.Background(), filter).Decode(reportlist)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return nil, fmt.Errorf("no data found for ID %s", _id)
+		}
+		return nil, fmt.Errorf("error retrieving data for ID %s: %s", _id, err.Error())
+	}
+
+	return reportlist, nil
+}
+
 // func GetOneReportData(mongoconn *mongo.Database, colname, Nik string) (dest Report) {
 // 	filter := bson.M{"nik": Nik}
 // 	dest = atdb.GetOneDoc[Report](mongoconn, colname, filter)
