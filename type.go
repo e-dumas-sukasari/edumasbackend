@@ -47,7 +47,7 @@ type Credential struct {
 	Token   string `json:"token,omitempty" bson:"token,omitempty"`
 	Message string `json:"message,omitempty" bson:"message,omitempty"`
 	Data    []Report `bson:"data,omitempty" json:"data,omitempty"`
-	Datas    []UserNew `bson:"data,omitempty" json:"data,omitempty"`
+	Datas    []UserNew `bson:"datas,omitempty" json:"datas,omitempty"`
 }
 
 type ResponseDataUser struct {
