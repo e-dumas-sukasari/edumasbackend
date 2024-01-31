@@ -134,6 +134,42 @@ func GetAllDataUser(PublicKey, MongoEnv, dbname, colname string, r *http.Request
 	return ReturnStringStruct(req)
 }
 
+//Get satu data User
+func GetOneDataUser(MONGOCONNSTRINGENV, dbname, collectionname string, r *http.Request) string {
+	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
+	resp := new(Credential)
+	userdata := new(UserNew)
+	resp.Status = false
+	err := json.NewDecoder(r.Body).Decode(&userdata)
+
+	id := r.URL.Query().Get("_id")
+	if id == "" {
+		resp.Message = "Missing '_id' parameter in the URL"
+		return GCFReturnStruct(resp)
+	}
+
+	ID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		resp.Message = "Invalid '_id' parameter in the URL"
+		return GCFReturnStruct(resp)
+	}
+
+	userdata.ID = ID
+
+	// Menggunakan fungsi GetProdukFromID untuk mendapatkan data produk berdasarkan ID
+	userdata, err = GetUserFromID(mconn, collectionname, ID)
+	if err != nil {
+		resp.Message = err.Error()
+		return GCFReturnStruct(resp)
+	}
+
+	resp.Status = true
+	resp.Message = "Get Data Berhasil"
+	resp.Datas = []UserNew{*userdata}
+
+	return GCFReturnStruct(resp)
+}
+
 func GCFFindUserByName(MONGOCONNSTRINGENV, dbname, collectionname string, r *http.Request) string {
 	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
 	var datauser User

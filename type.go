@@ -16,9 +16,10 @@ type User struct {
 }
 
 type UserNew struct{
-	Username string `json:"username" bson:"username"`
-	Password string `json:"password" bson:"password"`
-	Notelp	 string `json:"notelp" bson:"notelp"`
+	ID       primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
+	Username string `json:"username" bson:"username,omitempty"`
+	Password string `json:"password" bson:"password,omitempty"`
+	Notelp	 string `json:"notelp" bson:"notelp,omitempty"`
 	Role     string `json:"role,omitempty" bson:"role,omitempty"`
 	Token    string `json:"token,omitempty" bson:"token,omitempty"`
 	Private  string `json:"private,omitempty" bson:"private,omitempty"`
@@ -46,6 +47,7 @@ type Credential struct {
 	Token   string `json:"token,omitempty" bson:"token,omitempty"`
 	Message string `json:"message,omitempty" bson:"message,omitempty"`
 	Data    []Report `bson:"data,omitempty" json:"data,omitempty"`
+	Datas    []UserNew `bson:"data,omitempty" json:"data,omitempty"`
 }
 
 type ResponseDataUser struct {
