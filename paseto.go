@@ -225,6 +225,7 @@ func GCFInsertReport(publickey, MONGOCONNSTRINGENV, dbname, colluser, collreport
 						DateOccurred: 	datareport.DateOccurred,
 						Image:       	datareport.Image,
 						Status:      	datareport.Status,
+						Tanggapan: 		datareport.Tanggapan,
 					})
 					response.Status = true
 					response.Message = "Berhasil Insert Report"
@@ -447,47 +448,6 @@ func GCFGetAllReportID(MONGOCONNSTRINGENV, dbname, collectionname string, r *htt
 	}
 }
 
-func GCFGetAllReportNik(MONGOCONNSTRINGENV, dbname, collectionname string, r *http.Request) string {
-	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
-
-	var datareport Report
-	err := json.NewDecoder(r.Body).Decode(&datareport)
-	if err != nil {
-		return err.Error()
-	}
-
-	report := FindOneReport(mconn, collectionname, datareport)
-	if report != (Report{}) {
-		return GCFReturnStruct(CreateResponse(true, "Success: Get NIK Report", datareport))
-	} else {
-		return GCFReturnStruct(CreateResponse(false, "Failed to Get NIK Report", datareport))
-	}
-}
-
-func GCFFindReportByNik(MONGOCONNSTRINGENV, dbname, collectionname string, r *http.Request) string {
-	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
-	var datareport Report
-	err := json.NewDecoder(r.Body).Decode(&datareport)
-	if err != nil {
-		return err.Error()
-	}
-
-	// Jika report kosong, maka respon "false" dan data tidak ada
-	if datareport.Nik ==  0 {
-		return "false"
-	}
-
-	// Jika ada report, mencari data report
-	report := FindReport(mconn, collectionname, datareport)
-
-	// Jika data report ditemukan, mengembalikan data pengguna dalam format yang sesuai
-	if report != (Report{}) {
-		return GCFReturnStruct(report)
-	}
-
-	// Jika tidak ada data report yang ditemukan, mengembalikan "false" dan data tidak ada
-	return "false"
-}
 
 func GetOneDataReport(MONGOCONNSTRINGENV, dbname, collectionname string, r *http.Request) string {
 	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)

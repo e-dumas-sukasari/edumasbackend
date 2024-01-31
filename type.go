@@ -85,6 +85,7 @@ type Report struct {
     Description   	string 				`json:"description" bson:"description" json:"description,omitempty`
     DateOccurred  	string 				`json:"dateOccurred" bson:"dateOccured" json:"dataOccurred,omitempty`
 	Image       	string             	`json:"image" bson:"image" json:"image,omitempty`
+	Tanggapan		string				`json:"tanggapan" bson:"tanggapan" json:"tanggapan,omitempty`
 	Status      	bool               	`json:"status" bson:"status" json:"status,omitempty`
 }
 
