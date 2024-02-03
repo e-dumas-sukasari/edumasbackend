@@ -231,6 +231,11 @@ func UpdatedUser(mongoconn *mongo.Database, collection string, filter bson.M, us
 	return atdb.ReplaceOneDoc(mongoconn, collection, updatedFilter, userdata2)
 }
 
+func EditUser(mongoenv *mongo.Database, collname string, datauser UserNew) interface{} {
+	filter := bson.M{"username": datauser.Username}
+	return atdb.ReplaceOneDoc(mongoenv, collname, filter, datauser)
+}
+
 func GetUserFromID(db *mongo.Database, col string, _id primitive.ObjectID) (*UserNew, error) {
 	cols := db.Collection(col)
 	filter := bson.M{"_id": _id}

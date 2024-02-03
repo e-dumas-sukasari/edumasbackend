@@ -44,3 +44,19 @@ func DecodeGetUser(PublicKey, tokenStr string) (pay string, err error) {
 	return key.Report, nil
 }
 
+func DecodeGetUsername(publickey string, tokenstring string) string {
+	payload, err := Decoder(publickey, tokenstring)
+	if err != nil {
+		fmt.Println("Decode DecodeGetId : ", err)
+	}
+	return payload.Username
+}
+
+func DecodeGetRole(publickey string, tokenstring string) string {
+	payload, err := Decoder(publickey, tokenstring)
+	if err != nil {
+		fmt.Println("Decode DecodeGetId : ", err)
+	}
+	return payload.Role
+}
+

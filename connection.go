@@ -61,6 +61,11 @@ func FindUserNew(mongoconn *mongo.Database, collection string, userdata UserNew)
 	return atdb.GetOneDoc[UserNew](mongoconn, collection, filter)
 }
 
+func FindUserNews(mongoenv *mongo.Database, collname string, userdata UserNew) UserNew {
+	filter := bson.M{"username": userdata.Username}
+	return atdb.GetOneDoc[UserNew](mongoenv, collname, filter)
+}
+
 func FindAdmin(mongoconn *mongo.Database, collection string, admindata Admin) Admin {
 	filter := bson.M{"username": admindata.Username}
 	return atdb.GetOneDoc[Admin](mongoconn, collection, filter)
@@ -86,6 +91,15 @@ func FindOneReport(mongoconn *mongo.Database, collection string, reportdata Repo
 	}
 
 	return result
+}
+
+func usernameExists(mongoenv, dbname string, userdata UserNew) bool {
+	mconn := SetConnection(mongoenv, dbname).Collection("user")
+	filter := bson.M{"username": userdata.Username}
+
+	var user UserNew
+	err := mconn.FindOne(context.Background(), filter).Decode(&user)
+	return err == nil
 }
 
 func IsExist(Tokenstr, PublicKey string) bool {

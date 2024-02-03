@@ -71,6 +71,8 @@ type Payload struct {
 	Id   primitive.ObjectID 	`json:"id"`
 	Admin 		string				`json:"admin"`
 	User 		string				`json:"user"`
+	UserNew		string				`json:"usernew`
+	Username	string				`json:"username`
 	Tanggapan 	string				`json:"tanggapan"`
 	Report		string				`json:"report"`
 	Role 		string             	`json:"role"`

@@ -11,6 +11,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+func ReturnStruct(DataStuct any) string {
+	jsondata, _ := json.Marshal(DataStuct)
+	return string(jsondata)
+}
+
 // <--- ini Login & Register User --->
 
 func Register(Mongoenv, dbname string, r *http.Request) string {
@@ -407,8 +412,8 @@ func GCFUpdateUserForUser(publickey, MONGOCONNSTRINGENV, dbname, colluser string
 			response.Message = "Invalid token"
 		} else {
 			user2 := FindUserNew(mconn, colluser, userdata)
-			if user2.Role == "admin" {
-				var datauser UserNew
+			if user2.Role == "user" {
+				var datauser UserNew	
 				err := json.NewDecoder(r.Body).Decode(&datauser)
 				if err != nil {
 					response.Message = "Error parsing application/json: " + err.Error()
@@ -420,12 +425,94 @@ func GCFUpdateUserForUser(publickey, MONGOCONNSTRINGENV, dbname, colluser string
 					GCFReturnStruct(CreateResponse(true, "Success Update User", datauser))
 				}
 			} else {
-				response.Message = "Anda tidak bisa Update data karena bukan Admin"
+				response.Message = "Anda tidak bisa Update data karena bukan User"
 			}
 
 		}
 	}
 	return GCFReturnStruct(response)
+}
+
+func UpdateUserByUser(publickey, mongoenv, dbname, collname string, r *http.Request) string {
+	var response Credential
+	response.Status = false
+
+	// Establish MongoDB connection
+	mconn := SetConnection(mongoenv, dbname)
+
+	// Decode user data from the request body
+	var auth UserNew
+	var datauser UserNew
+	err := json.NewDecoder(r.Body).Decode(&datauser)
+
+	// Check for JSON decoding errors
+	if err != nil {
+		response.Message = "Error parsing application/json: " + err.Error()
+		return ReturnStruct(response)
+	}
+
+	// Get token and perform basic token validation
+	header := r.Header.Get("Login")
+	if header == "" {
+		response.Message = "Header login tidak ditemukan"
+		return ReturnStruct(response)
+	}
+
+	// Decode token to get username and role
+	tokenusername := DecodeGetUsername(os.Getenv(publickey), header)
+	tokenrole := DecodeGetRole(os.Getenv(publickey), header)
+	auth.Username = tokenusername
+
+	// Check if decoding was successful
+	if tokenusername == "" || tokenrole == "" {
+		response.Message = "Hasil decode tidak ditemukan"
+		return ReturnStruct(response)
+	}
+
+	// Check if the user account exists
+	if !usernameExists(mongoenv, dbname, auth) {
+		response.Message = "Akun tidak ditemukan"
+		return ReturnStruct(response)
+	}
+
+	// Check if the user has user privileges
+	if tokenrole != "user" {
+		response.Message = "Anda tidak memiliki akses"
+		return ReturnStruct(response)
+	}
+
+	// Check if the username parameter is provided
+	if datauser.Username == "" {
+		response.Message = "Parameter dari function ini adalah username"
+		return ReturnStruct(response)
+	}
+
+	// Check if the user to be edited exists
+	if !usernameExists(mongoenv, dbname, datauser) {
+		response.Message = "Akun yang ingin diedit tidak ditemukan"
+		return ReturnStruct(response)
+	}
+	
+	// Hash the user's password if provided
+	if datauser.Password != "" {
+		hash, hashErr := HashPass(datauser.Password)
+		if hashErr != nil {
+			response.Message = "Gagal Hash Password: " + hashErr.Error()
+			return ReturnStruct(response)
+		}
+		datauser.Password = hash
+	} else {
+		// Retrieve user details
+		user := FindUserNews(mconn, collname, datauser)
+		datauser.Password = user.Password
+	}
+
+	// Perform user update
+	EditUser(mconn, collname, datauser)
+
+	response.Status = true
+	response.Message = "Berhasil update " + datauser.Username + " dari database"
+	return ReturnStruct(response)
 }
 
 func GCFDeleteUserForAdmin(publickey, MONGOCONNSTRINGENV, dbname, colladmin, colluser string, r *http.Request) string {
