@@ -56,6 +56,11 @@ func FindUser(mongoconn *mongo.Database, collection string, userdata User) User 
 	return atdb.GetOneDoc[User](mongoconn, collection, filter)
 }
 
+func FindUserNew(mongoconn *mongo.Database, collection string, userdata UserNew) UserNew {
+	filter := bson.M{"username": userdata.Username}
+	return atdb.GetOneDoc[UserNew](mongoconn, collection, filter)
+}
+
 func FindAdmin(mongoconn *mongo.Database, collection string, admindata Admin) Admin {
 	filter := bson.M{"username": admindata.Username}
 	return atdb.GetOneDoc[Admin](mongoconn, collection, filter)

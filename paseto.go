@@ -352,7 +352,7 @@ func GCFUpdateReportForAdmin(publickey, MONGOCONNSTRINGENV, dbname, colladmin, c
 	return GCFReturnStruct(response)
 }
 
-// Update report for admin
+// Update data user for admin
 func GCFUpdateUserForAdmin(publickey, MONGOCONNSTRINGENV, dbname, colladmin, colluser string, r *http.Request) string {
 	var response Credential
 	response.Status = false
@@ -370,6 +370,44 @@ func GCFUpdateUserForAdmin(publickey, MONGOCONNSTRINGENV, dbname, colladmin, col
 		} else {
 			admin2 := FindAdmin(mconn, colladmin, admindata)
 			if admin2.Role == "admin" {
+				var datauser UserNew
+				err := json.NewDecoder(r.Body).Decode(&datauser)
+				if err != nil {
+					response.Message = "Error parsing application/json: " + err.Error()
+
+				} else {
+					UpdatedUser(mconn, colluser, bson.M{"username": datauser.Username}, datauser)
+					response.Status = true
+					response.Message = "Berhasil Update User"
+					GCFReturnStruct(CreateResponse(true, "Success Update User", datauser))
+				}
+			} else {
+				response.Message = "Anda tidak bisa Update data karena bukan Admin"
+			}
+
+		}
+	}
+	return GCFReturnStruct(response)
+}
+
+// Update data user for User
+func GCFUpdateUserForUser(publickey, MONGOCONNSTRINGENV, dbname, colluser string, r *http.Request) string {
+	var response Credential
+	response.Status = false
+	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
+	var userdata UserNew
+
+	gettoken := r.Header.Get("Login")
+	if gettoken == "" {
+		response.Message = "Missing Login in Headers"
+	} else {
+		checktoken := watoken.DecodeGetId(os.Getenv(publickey), gettoken)
+		userdata.Username = checktoken
+		if checktoken == "" {
+			response.Message = "Invalid token"
+		} else {
+			user2 := FindUserNew(mconn, colluser, userdata)
+			if user2.Role == "admin" {
 				var datauser UserNew
 				err := json.NewDecoder(r.Body).Decode(&datauser)
 				if err != nil {
