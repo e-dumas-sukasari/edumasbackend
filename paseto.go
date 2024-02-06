@@ -267,6 +267,7 @@ func GCFInsertReport(publickey, MONGOCONNSTRINGENV, dbname, colluser, collreport
 						DateOccurred: 	datareport.DateOccurred,
 						Image:       	datareport.Image,
 						Status:      	datareport.Status,
+						PihakTerkait: 	datareport.PihakTerkait,
 						Tanggapan: 		datareport.Tanggapan,
 					})
 					response.Status = true
@@ -492,7 +493,7 @@ func UpdateUserByUser(publickey, mongoenv, dbname, collname string, r *http.Requ
 		response.Message = "Akun yang ingin diedit tidak ditemukan"
 		return ReturnStruct(response)
 	}
-	
+
 	// Hash the user's password if provided
 	if datauser.Password != "" {
 		hash, hashErr := HashPass(datauser.Password)

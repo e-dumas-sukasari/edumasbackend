@@ -91,6 +91,7 @@ type Report struct {
 	Image       	string             	`json:"image" bson:"image" json:"image,omitempty`
 	Tanggapan		string				`json:"tanggapan" bson:"tanggapan" json:"tanggapan,omitempty`
 	Status      	bool               	`json:"status" bson:"status" json:"status,omitempty`
+	PihakTerkait	string				`json:"pihakterkait" bson:"pihakterkait" json:"pihakterkait,omitempty`
 }
 
 type Contact struct {
