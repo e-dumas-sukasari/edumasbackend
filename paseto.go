@@ -358,6 +358,44 @@ func GCFUpdateReportForAdmin(publickey, MONGOCONNSTRINGENV, dbname, colladmin, c
 	return GCFReturnStruct(response)
 }
 
+// Update report for User
+func GCFUpdateReportForUser(publickey, MONGOCONNSTRINGENV, dbname, colluser, collreport string, r *http.Request) string {
+	var response Credential
+	response.Status = false
+	mconn := SetConnection(MONGOCONNSTRINGENV, dbname)
+	var userdata UserNew
+
+	gettoken := r.Header.Get("Login")
+	if gettoken == "" {
+		response.Message = "Missing Login in Headers"
+	} else {
+		checktoken := watoken.DecodeGetId(os.Getenv(publickey), gettoken)
+		userdata.Username = checktoken
+		if checktoken == "" {
+			response.Message = "Invalid token"
+		} else {
+			user2 := FindUserNew(mconn, colluser, userdata)
+			if user2.Role == "user" {
+				var datareport Report
+				err := json.NewDecoder(r.Body).Decode(&datareport)
+				if err != nil {
+					response.Message = "Error parsing application/json: " + err.Error()
+
+				} else {
+					UpdatedReport(mconn, collreport, bson.M{"id": datareport.ID}, datareport)
+					response.Status = true
+					response.Message = "Berhasil Update Report"
+					GCFReturnStruct(CreateResponse(true, "Success Update Report", datareport))
+				}
+			} else {
+				response.Message = "Anda tidak bisa Update data karena bukan User"
+			}
+
+		}
+	}
+	return GCFReturnStruct(response)
+}
+
 // Update data user for admin
 func GCFUpdateUserForAdmin(publickey, MONGOCONNSTRINGENV, dbname, colladmin, colluser string, r *http.Request) string {
 	var response Credential
